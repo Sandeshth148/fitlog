@@ -1,0 +1,10 @@
+/* You can add global styles to this file, and also import other style files */
+@import './styles/themes.scss';
+
+body {
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  margin: 0;
+  font-family: 'Segoe UI', sans-serif;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
