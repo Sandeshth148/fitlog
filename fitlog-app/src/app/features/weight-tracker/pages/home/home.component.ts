@@ -1,37 +1,73 @@
-import { Component } from '@angular/core';
+import { Component, signal, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { ThemeService } from '../../../../core/services/theme.service';
+import { StorageService } from '../../../../core/services/storage.service';
+import { EntryListComponent } from '../../components/entry-list/entry-list.component';
+import { EntryFormComponent } from '../../components/entry-form/entry-form.component';
+import { ButtonComponent } from '../../../../shared/components/button/button.component';
+import { WeightEntry } from '../../models/weight-entry.model';
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, EntryListComponent, EntryFormComponent, ButtonComponent],
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss'],
 })
-export class HomeComponent {
+export class HomeComponent implements OnInit {
+    isEntryFormVisible = signal(false);
+  editingEntry = signal<WeightEntry | undefined>(undefined);
+  entries = signal<WeightEntry[]>([]);
+
+  private storageService = inject(StorageService);
   /**
-   * feature: Manual Theming with CSS Variables + Theme Toggle
-    Steps Recap:
-
-    Created themes.scss with :root {} and [data-theme="dark"] blocks.
-
-    Applied color variables in styles.scss using var(--color-xyz).
-
-    Used a <button> in HomeComponent to toggle themes.
-
-    The toggle method updated document.documentElement.dataset.theme.
-
-    🧠 What It Does:
-
-    We used CSS variables for theming because they’re lightweight, runtime-adjustable, and don’t need recompilation. The data-theme attribute switches between light and dark themes, and CSS updates dynamically.
-
-    🎯 Design Principle:
-
-    Separation of Style and Logic — no Angular bindings or JS DOM manipulation is needed for color changes.
+   * feature: Theming with CSS Variables + Theme Service
+   * 
+   * Steps:
+   * 1. Created themes.scss with :root {} and [data-theme="dark"] blocks
+   * 2. Applied color variables in styles.scss using var(--color-xyz)
+   * 3. Created ThemeService to manage theme state and persistence
+   * 4. Used ThemeService in HomeComponent for toggling themes
+   * 
+   * What It Does:
+   * We use CSS variables for theming because they're lightweight, runtime-adjustable,
+   * and don't need recompilation. The ThemeService centralizes theme management and
+   * persists user preferences in localStorage.
+   * 
+   * Design Principles:
+   * - Separation of Concerns - theme logic is in a dedicated service
+   * - Single Responsibility - component only handles UI, service handles theme state
+   * - Persistence - user preferences are saved between sessions
    */
-  toggleTheme() {
-    const root = document.documentElement;
-    const current = root.getAttribute('data-theme');
-    root.setAttribute('data-theme', current === 'dark' ? 'light' : 'dark');
+      constructor(public theme: ThemeService) {}
+
+  ngOnInit(): void {
+    this.loadEntries();
+  }
+
+  async loadEntries(): Promise<void> {
+    const entries = await this.storageService.getAllEntries();
+    this.entries.set(entries.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()));
+  }
+
+  showEntryForm(entry?: WeightEntry): void {
+    this.editingEntry.set(entry);
+    this.isEntryFormVisible.set(true);
+  }
+
+  hideEntryForm(): void {
+    this.isEntryFormVisible.set(false);
+    this.editingEntry.set(undefined);
+  }
+
+    async onEntrySaved(entry: WeightEntry): Promise<void> {
+    await this.storageService.addEntry(entry);
+    this.hideEntryForm();
+    await this.loadEntries();
+  }
+
+  async onEntryDeleted(id: string): Promise<void> {
+    await this.storageService.deleteEntry(id);
+    await this.loadEntries();
   }
 }

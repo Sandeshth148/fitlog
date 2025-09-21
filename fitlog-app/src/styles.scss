@@ -1,5 +1,9 @@
 /* You can add global styles to this file, and also import other style files */
-@import './styles/themes.scss';
+@use './styles/themes';
+
+*, *::before, *::after {
+  box-sizing: border-box;
+}
 
 body {
   background-color: var(--color-bg);

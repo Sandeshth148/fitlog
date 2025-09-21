@@ -1,15 +1,29 @@
 <section class="fitlog-container">
   <header class="fitlog-header">
     <h1>Welcome to FitLog</h1>
-    <button (click)="toggleTheme()" aria-label="Toggle light or dark theme">
-      Toggle Theme
-    </button>
+    <app-button (clicked)="theme.toggleTheme()" [ariaLabel]="'Toggle theme'">
+      {{ theme.getTheme() === 'dark' ? 'Light' : 'Dark' }} Mode
+    </app-button>
   </header>
 
   <main class="fitlog-main">
     <p>Your personal weight tracking assistant.</p>
-    <button class="fab" aria-label="Add a new weight entry">
+    <app-button *ngIf="!isEntryFormVisible()" (clicked)="showEntryForm()" ariaLabel="Add new weight entry" size="lg" class="fab">
       + Add Entry
-    </button>
+    </app-button>
+
+    <app-entry-form 
+      *ngIf="isEntryFormVisible()" 
+      [entry]="editingEntry()" 
+      (entrySaved)="onEntrySaved($event)" 
+      (formCancelled)="hideEntryForm()">
+    </app-entry-form>
+
+    <app-entry-list 
+      *ngIf="!isEntryFormVisible()" 
+      [entries]="entries()" 
+      (entryEdited)="showEntryForm($event)" 
+      (entryDeleted)="onEntryDeleted($event)">
+    </app-entry-list>
   </main>
 </section>
