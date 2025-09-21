@@ -29,6 +29,65 @@
 ## Concrete step-by-step plan
 
 ### Branch
+
+## 🌍 Extended Learning Roadmap (Backlog Features)
+FitLog is not just an app, it’s a learning lab for modern engineering practices. Beyond the MVP, here’s the full backlog of what we planned:
+
+### Frontend Features & UX
+- Signals (Angular 19/20) for component state instead of RxJS where appropriate
+- Reactive Forms & FormBuilder — advanced forms with nested groups and validators, including template-driven, strongly typed, and dynamic forms
+- Grid-based layouts (CSS Grid, AG Grid, and strong grid usage over flexbox)
+- Responsive design — mobile-first, breakpoints, adaptive components
+- Charts & Data Viz — weight trends using Chart.js or ApexCharts
+- i18n / Translations — ngx-translate, JSON dictionaries (English, Hindi/Kannada for parents)
+- Accessibility (WCAG) — semantic HTML, aria roles, color contrast, focus management, “skip to content” links, keyboard navigation
+- Branding & Theming — multiple theme packs (like Slack/Mimecast), user-selectable, dynamic branding via CSS variables
+- Dark/Light + Dynamic Branding via CSS variables
+- Custom icons, favicon, and PWA install banners
+- Error boundaries and fallback UIs
+- Advanced logging and notification (toast/snackbar) system
+
+### Application Architecture
+- Core/Shared/Features structure for modular Angular apps
+- Micro-Frontends — explore Module Federation, Angular microfrontend strategies, and integrating a Notes/Task Tracker micro-app
+- PWA + App Shell — offline-first, background sync, push notifications
+- Electron wrapper — desktop version using the same codebase
+- State management patterns: signals, RxJS, and hybrid approaches
+- Repository pattern for storage and future server sync
+- Factory pattern for entry creation/unit conversion
+- Observer pattern: Angular Signals & RxJS observables for reactive state
+- Separation of Concerns: core vs shared vs feature layers
+
+### Backend & Integration
+- NestJS backend — REST API for weight entries (later sync with IndexedDB)
+- Microservices — split into auth, logging, analytics, and notification services
+- WebSockets & SSE — live updates (collaborative logging, notifications)
+- Webhooks — external integrations (e.g., sync with Fitbit API, Google Fit)
+- Auth integration (JWT, OAuth2, social login)
+- API versioning and documentation (Swagger/OpenAPI)
+
+### Infrastructure & Ops
+- Reverse proxy with NGINX — routing, caching, TLS termination, load balancing
+- Deployment — GitHub Pages (frontend) → Dockerize → Cloud hosting (AWS/GCP/Azure)
+- CI/CD pipelines — GitHub Actions with lint/test/build checks, auto-deploy
+- Logging & Error Handling — LoggerService, GlobalErrorHandler, user-friendly fallback UI
+- Analytics & Monitoring — custom events for usage tracking (privacy-friendly), Sentry, Prometheus
+- Automated testing: unit, integration, and E2E (Jest, Cypress, Playwright)
+- DevOps best practices: environment variables, secrets management, rollbacks
+
+### Extra Learning & Experimentation
+- ElectronJS: Build a desktop app using the same Angular codebase
+- Micro-frontends: Integrate a second app (e.g., Notes/Tasks) into FitLog shell
+- Advanced grid usage: AG Grid, virtual scrolling, drag-and-drop
+- Advanced charting: interactive/real-time charts, exporting data
+- Offline sync strategies: IndexedDB <-> server, conflict resolution
+- Advanced i18n: runtime language switching, pluralization, ICU expressions
+- Accessibility audits: Lighthouse, axe-core, manual keyboard testing
+- Branding: runtime theming, user-selectable color palettes, theme JSON loader
+- Reverse proxy with NGINX: serve multiple apps + backend, SSL termination
+- Full-stack monitoring: logs, metrics, error reporting, alerting
+- Experiment with SSR (Angular Universal) for SEO
+
 Create a focused branch:
 ```
 feature/day2-mvp-offline-entry
