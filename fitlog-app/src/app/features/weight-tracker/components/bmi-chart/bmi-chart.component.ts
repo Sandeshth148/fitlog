@@ -1,0 +1,277 @@
+import { Component, OnInit, ElementRef, ViewChild, AfterViewInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { Chart, ChartConfiguration, ChartType } from 'chart.js';
+import { ChartService } from '../../services/chart.service';
+import { UserService } from '../../../../core/services/user.service';
+
+@Component({
+  selector: 'app-bmi-chart',
+  standalone: true,
+  imports: [CommonModule],
+  template: `
+    <div class="chart-container">
+      <h3>BMI Trend</h3>
+      
+      <div class="chart-controls">
+        <button 
+          *ngFor="let range of timeRanges" 
+          [class.active]="selectedRange === range.days"
+          (click)="setTimeRange(range.days)">
+          {{ range.label }}
+        </button>
+      </div>
+      
+      <div class="chart-wrapper">
+        <canvas #chartCanvas></canvas>
+      </div>
+      
+      <div class="bmi-legend">
+        <div class="legend-item">
+          <span class="color-box underweight"></span>
+          <span>Underweight (&lt;18.5)</span>
+        </div>
+        <div class="legend-item">
+          <span class="color-box normal"></span>
+          <span>Normal (18.5-24.9)</span>
+        </div>
+        <div class="legend-item">
+          <span class="color-box overweight"></span>
+          <span>Overweight (25-29.9)</span>
+        </div>
+        <div class="legend-item">
+          <span class="color-box obese"></span>
+          <span>Obese (≥30)</span>
+        </div>
+      </div>
+      
+      <div class="chart-empty" *ngIf="!hasData">
+        <p *ngIf="hasHeight">No BMI data available for the selected time range.</p>
+        <p *ngIf="!hasHeight">Please set your height in the profile to see BMI data.</p>
+      </div>
+    </div>
+  `,
+  styles: [`
+    .chart-container {
+      background-color: var(--color-bg);
+      border-radius: 12px;
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+      border: 1px solid var(--color-border);
+    }
+    
+    h3 {
+      margin-top: 0;
+      margin-bottom: 1rem;
+      color: var(--color-text);
+      font-size: 1.25rem;
+    }
+    
+    .chart-controls {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      margin-bottom: 1rem;
+      
+      button {
+        padding: 0.5rem 0.75rem;
+        border-radius: 4px;
+        border: 1px solid var(--color-border);
+        background-color: var(--color-bg);
+        color: var(--color-text);
+        font-size: 0.875rem;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        
+        &:hover {
+          background-color: var(--color-bg-offset);
+        }
+        
+        &.active {
+          background-color: var(--color-primary);
+          border-color: var(--color-primary);
+          color: white;
+        }
+      }
+    }
+    
+    .chart-wrapper {
+      height: 300px;
+      position: relative;
+    }
+    
+    .bmi-legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin-top: 1rem;
+      justify-content: center;
+      
+      .legend-item {
+        display: flex;
+        align-items: center;
+        font-size: 0.875rem;
+        
+        .color-box {
+          width: 16px;
+          height: 16px;
+          border-radius: 4px;
+          margin-right: 0.5rem;
+        }
+        
+        .underweight {
+          background-color: var(--color-info, #3b82f6);
+        }
+        
+        .normal {
+          background-color: var(--color-success, #10b981);
+        }
+        
+        .overweight {
+          background-color: var(--color-warning, #f59e0b);
+        }
+        
+        .obese {
+          background-color: var(--color-danger, #ef4444);
+        }
+      }
+    }
+    
+    .chart-empty {
+      text-align: center;
+      padding: 2rem 0;
+      color: var(--color-text-secondary);
+      
+      p {
+        margin: 0.5rem 0;
+      }
+    }
+  `]
+})
+export class BmiChartComponent implements OnInit, AfterViewInit {
+  @ViewChild('chartCanvas') chartCanvas!: ElementRef<HTMLCanvasElement>;
+  private chart: Chart | null = null;
+  
+  timeRanges = [
+    { label: '1M', days: 30 },
+    { label: '3M', days: 90 },
+    { label: '6M', days: 180 },
+    { label: '1Y', days: 365 },
+    { label: 'All', days: 5 * 365 } // 5 years max
+  ];
+  
+  selectedRange = 90; // Default to 3 months
+  hasData = false;
+  hasHeight = false;
+  
+  chartData: ChartConfiguration['data'] = {
+    datasets: [],
+    labels: []
+  };
+  
+  chartOptions: ChartConfiguration['options'] = {
+    responsive: true,
+    maintainAspectRatio: false,
+    scales: {
+      x: {
+        type: 'time',
+        time: {
+          unit: 'day',
+          displayFormats: {
+            day: 'MMM d'
+          }
+        },
+        title: {
+          display: true,
+          text: 'Date'
+        }
+      },
+      y: {
+        beginAtZero: false,
+        title: {
+          display: true,
+          text: 'BMI'
+        },
+        suggestedMin: 15,
+        suggestedMax: 35
+      }
+    },
+    plugins: {
+      legend: {
+        display: false
+      },
+      tooltip: {
+        mode: 'index',
+        intersect: false,
+        callbacks: {
+          label: function(context) {
+            const bmi = context.parsed.y;
+            let category = '';
+            
+            if (bmi < 18.5) {
+              category = 'Underweight';
+            } else if (bmi < 25) {
+              category = 'Normal weight';
+            } else if (bmi < 30) {
+              category = 'Overweight';
+            } else {
+              category = 'Obese';
+            }
+            
+            return `BMI: ${bmi.toFixed(1)} (${category})`;
+          }
+        }
+      }
+    }
+  };
+  
+  constructor(
+    private chartService: ChartService,
+    private userService: UserService
+  ) {}
+  
+  async ngOnInit() {
+    // Check if user has height set
+    const profile = await this.userService.getUserProfile();
+    this.hasHeight = !!profile && profile.heightCm > 0;
+  }
+  
+  async ngAfterViewInit() {
+    if (this.hasHeight) {
+      await this.loadChartData();
+    }
+  }
+  
+  async setTimeRange(days: number) {
+    this.selectedRange = days;
+    await this.loadChartData();
+  }
+  
+  private async loadChartData() {
+    if (!this.hasHeight) return;
+    
+    try {
+      const chartData = await this.chartService.getBmiChartData(this.selectedRange);
+      this.hasData = chartData.labels.length > 0;
+      
+      if (!this.hasData) {
+        return;
+      }
+      
+      // Destroy existing chart if it exists
+      if (this.chart) {
+        this.chart.destroy();
+      }
+      
+      // Create new chart
+      this.chart = new Chart(this.chartCanvas.nativeElement, {
+        type: 'line',
+        data: chartData,
+        options: this.chartOptions
+      });
+    } catch (error) {
+      console.error('Error loading BMI chart data:', error);
+      this.hasData = false;
+    }
+  }
+}

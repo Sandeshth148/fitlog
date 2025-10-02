@@ -7,7 +7,17 @@
           <span class="entry-date">{{ entry.date | date: 'mediumDate' }}</span>
           <span class="entry-time" *ngIf="entry.time">{{ entry.time }}</span>
         </div>
-        <span class="entry-weight">{{ entry.weightKg.toFixed(1) }} {{ entry.units || 'kg' }}</span>
+        <span class="entry-weight" [attr.data-unit]="entry.units || 'kg'">{{ entry.weightKg.toFixed(1) }}</span>
+        
+        <!-- BMI Display -->
+        <div class="entry-bmi" *ngIf="hasHeight && entry.bmi && showBmi">
+          <app-bmi-display 
+            [bmi]="entry.bmi" 
+            [heightCm]="userHeight"
+            [showIdealWeight]="false">
+          </app-bmi-display>
+        </div>
+        
         <span class="entry-notes" *ngIf="entry.notes">{{ entry.notes }}</span>
       </div>
       <div class="entry-actions">

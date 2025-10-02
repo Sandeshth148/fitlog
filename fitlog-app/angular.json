@@ -79,7 +79,7 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "buildTarget": "fitlog-app:build:production"
+            "buildTarget": "fitlog-app:build:development"
           },
           "configurations": {
             "production": {
@@ -89,7 +89,7 @@
               "buildTarget": "fitlog-app:build:development"
             }
           },
-          "defaultConfiguration": "production"
+          "defaultConfiguration": "development"
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",

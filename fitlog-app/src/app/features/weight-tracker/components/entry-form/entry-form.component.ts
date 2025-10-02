@@ -3,6 +3,8 @@ import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { WeightEntry, WeightEntryUtils } from '../../models/weight-entry.model';
 import { ButtonComponent } from '../../../../shared/components/button/button.component';
+import { DateValidationService } from '../../../../core/services/date-validation.service';
+import { StorageService } from '../../../../core/services/storage.service';
 
 @Component({
   selector: 'app-entry-form',
@@ -19,8 +21,15 @@ export class EntryFormComponent implements OnInit {
 
   entryForm!: FormGroup;
   today = new Date().toISOString().split('T')[0]; // YYYY-MM-DD format
+  minDate: string;
   
-  constructor(private fb: FormBuilder) {}
+  constructor(
+    private fb: FormBuilder,
+    public dateValidationService: DateValidationService,
+    private storageService: StorageService
+  ) {
+    this.minDate = this.dateValidationService.getMinDateString();
+  }
 
   ngOnInit(): void {
     this.initForm();
@@ -28,7 +37,13 @@ export class EntryFormComponent implements OnInit {
 
   private initForm(): void {
     this.entryForm = this.fb.group({
-      date: [this.entry?.date || this.today, Validators.required],
+      date: [
+        this.entry?.date || this.today, 
+        [
+          Validators.required,
+          this.dateValidationService.dateRangeValidator()
+        ]
+      ],
       weight: [
         this.entry ? 
           (this.entry.units === 'lb' ? 
@@ -43,7 +58,7 @@ export class EntryFormComponent implements OnInit {
     });
   }
 
-  onSubmit(): void {
+  async onSubmit(): Promise<void> {
     if (this.entryForm.invalid) {
       this.markFormGroupTouched(this.entryForm);
       console.log('EntryFormComponent: Form is invalid', this.entryForm.errors);
@@ -53,6 +68,13 @@ export class EntryFormComponent implements OnInit {
     try {
       console.log('EntryFormComponent: Form submitted', this.entryForm.value);
       const formValue = this.entryForm.value;
+      
+      // Validate date range
+      if (!this.dateValidationService.isDateInAllowedRange(formValue.date)) {
+        console.error('EntryFormComponent: Date out of allowed range', formValue.date);
+        this.entryForm.get('date')?.setErrors({ dateRange: true });
+        return;
+      }
       
       // Ensure weight is a valid number
       const weightValue = typeof formValue.weight === 'string' ? 
@@ -71,19 +93,24 @@ export class EntryFormComponent implements OnInit {
       const entryId = this.entry?.id;
       console.log('EntryFormComponent: Using ID', entryId || 'new entry (will generate ID)');
       
-      const savedEntry = WeightEntryUtils.createEntry({
-        id: entryId,
-        date: formValue.date,
-        weightKg,
-        time: formValue.time,
-        notes: formValue.notes,
-        units: formValue.units,
-        createdAt: this.entry?.createdAt
-      });
-      
-      console.log('EntryFormComponent: Entry prepared for saving', savedEntry);
-      this.entrySaved.emit(savedEntry);
-      this.resetForm();
+      try {
+        // Use the StorageService to add entry with BMI calculation
+        const savedEntry = await this.storageService.addEntryWithBmi({
+          id: entryId,
+          date: formValue.date,
+          weightKg,
+          time: formValue.time,
+          notes: formValue.notes,
+          units: formValue.units,
+          createdAt: this.entry?.createdAt
+        });
+        
+        console.log('EntryFormComponent: Entry saved with BMI', savedEntry);
+        this.entrySaved.emit(savedEntry);
+        this.resetForm();
+      } catch (error) {
+        console.error('EntryFormComponent: Error saving entry', error);
+      }
     } catch (error) {
       console.error('EntryFormComponent: Error submitting form', error);
     }

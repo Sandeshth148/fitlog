@@ -11,6 +11,9 @@ export interface WeightEntry {
   /** Weight in kilograms (canonical storage unit) */
   weightKg: number;
   
+  /** Body Mass Index (calculated from weight and user's height) */
+  bmi?: number;
+  
   /** Optional time of the measurement (HH:MM) */
   time?: string;
   
@@ -22,6 +25,9 @@ export interface WeightEntry {
   
   /** Timestamp when the entry was created */
   createdAt: string;
+  
+  /** Timestamp when the entry was last updated */
+  updatedAt?: string;
 }
 
 /**

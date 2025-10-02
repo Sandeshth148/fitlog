@@ -5,9 +5,11 @@
 
   <div class="form-field">
     <label for="date">Date</label>
-    <input id="date" type="date" formControlName="date" [max]="today">
+    <input id="date" type="date" formControlName="date" [min]="minDate" [max]="today">
+    <div class="date-range-hint">Valid range: {{ dateValidationService.formatDate(minDate) }} to {{ dateValidationService.formatDate(today) }}</div>
     <div *ngIf="entryForm.get('date')?.touched && entryForm.get('date')?.invalid" class="validation-error">
-      Date is required.
+      <span *ngIf="entryForm.get('date')?.errors?.['required']">Date is required.</span>
+      <span *ngIf="entryForm.get('date')?.errors?.['dateRange']">Date must be between {{ dateValidationService.formatDate(minDate) }} and today.</span>
     </div>
   </div>
 

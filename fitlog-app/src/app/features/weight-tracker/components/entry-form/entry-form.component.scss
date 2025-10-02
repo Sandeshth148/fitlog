@@ -92,6 +92,13 @@
   }
 }
 
+.date-range-hint {
+  font-size: 0.75rem;
+  color: var(--color-text-secondary, #a0aec0);
+  margin-top: 0.25rem;
+  font-style: italic;
+}
+
 .validation-error {
   color: var(--color-danger, #ef4444);
   font-size: 0.875rem;
