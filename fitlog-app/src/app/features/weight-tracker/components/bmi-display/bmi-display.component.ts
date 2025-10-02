@@ -13,7 +13,7 @@ import { BmiService, BmiCategory } from '../../../../core/services/bmi.service';
           <span class="value">{{ bmi.toFixed(1) }}</span>
           <span class="label">BMI</span>
         </div>
-        <div class="bmi-indicator">
+        <!-- <div class="bmi-indicator">
           <div class="indicator-bar">
             <div class="indicator-marker" [style.left]="getMarkerPosition()"></div>
           </div>
@@ -22,7 +22,7 @@ import { BmiService, BmiCategory } from '../../../../core/services/bmi.service';
             <span>25</span>
             <span>30</span>
           </div>
-        </div>
+        </div> -->
       </div>
       
       <div class="bmi-category">{{ getBmiCategory() }}</div>
