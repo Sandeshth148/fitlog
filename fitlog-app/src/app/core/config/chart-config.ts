@@ -1,4 +1,5 @@
 import { Chart, registerables } from 'chart.js';
+import 'chartjs-adapter-date-fns';
 
 /**
  * Register all Chart.js components
