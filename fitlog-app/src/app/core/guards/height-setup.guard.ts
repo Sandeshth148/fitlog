@@ -12,13 +12,22 @@ export class HeightSetupGuard implements CanActivate {
   ) {}
   
   async canActivate(): Promise<boolean | UrlTree> {
-    const isProfileComplete = await this.userService.isProfileComplete();
+    console.log('🔒 HeightSetupGuard: Checking profile completion...');
     
-    if (!isProfileComplete) {
-      // Redirect to setup page if height is not set
+    try {
+      const isProfileComplete = await this.userService.isProfileComplete();
+      console.log('🔒 HeightSetupGuard: Profile complete?', isProfileComplete);
+      
+      if (!isProfileComplete) {
+        console.log('🔒 HeightSetupGuard: Redirecting to setup page');
+        return this.router.parseUrl('/setup');
+      }
+      
+      console.log('🔒 HeightSetupGuard: Access granted');
+      return true;
+    } catch (error) {
+      console.error('🔒 HeightSetupGuard: Error checking profile:', error);
       return this.router.parseUrl('/setup');
     }
-    
-    return true;
   }
 }

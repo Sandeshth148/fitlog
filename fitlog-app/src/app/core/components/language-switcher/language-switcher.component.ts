@@ -157,8 +157,11 @@ export class LanguageSwitcherComponent {
   }
 
   selectLanguage(languageCode: string) {
+    console.log('🌐 Language selected:', languageCode);
     this.translationService.setLanguage(languageCode);
     this.isOpen = false;
+    // Force change detection
+    this.currentLanguageCode = languageCode;
   }
 
   getCurrentLanguage(): Language {

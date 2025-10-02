@@ -24,14 +24,19 @@ export class UserService {
    * Load user profile from localStorage
    */
   private loadProfileFromStorage(): void {
+    console.log('👤 UserService: Loading profile from storage...');
     try {
       const profileJson = localStorage.getItem(this.STORAGE_KEY);
+      console.log('👤 UserService: Raw profile JSON:', profileJson);
       if (profileJson) {
         const profile = JSON.parse(profileJson) as UserProfile;
+        console.log('👤 UserService: Parsed profile:', profile);
         this.userProfileSubject.next(profile);
+      } else {
+        console.log('👤 UserService: No profile found in storage');
       }
     } catch (error) {
-      console.error('Error loading user profile:', error);
+      console.error('👤 UserService: Error loading user profile:', error);
     }
   }
   
@@ -93,8 +98,12 @@ export class UserService {
    * @returns Promise resolving to boolean indicating if profile is complete
    */
   async isProfileComplete(): Promise<boolean> {
+    console.log('👤 UserService: Checking if profile is complete...');
     const profile = await this.getUserProfile();
-    return !!profile && profile.heightCm > 0;
+    console.log('👤 UserService: Current profile:', profile);
+    const isComplete = !!profile && profile.heightCm > 0;
+    console.log('👤 UserService: Profile complete?', isComplete);
+    return isComplete;
   }
   
   /**

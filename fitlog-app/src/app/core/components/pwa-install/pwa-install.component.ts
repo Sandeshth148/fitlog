@@ -1,25 +1,26 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { PwaInstallService } from '../../services/pwa-install.service';
+import { TranslatePipe } from '../../pipes/translate.pipe';
 import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-pwa-install',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, TranslatePipe],
   template: `
-    <div class="pwa-install-container" *ngIf="(canInstall$ | async) && !isInstalled">
+    <div class="pwa-install-container" *ngIf="(canInstall$ | async) && !isInstalled && !isDismissed">
       <div class="install-banner">
         <div class="install-content">
           <div class="install-icon">📱</div>
           <div class="install-text">
-            <h4>Install FitLog</h4>
-            <p>Get the full app experience</p>
+            <h4>{{ 'pwa.installTitle' | translate }}</h4>
+            <p>{{ 'pwa.installSubtitle' | translate }}</p>
           </div>
         </div>
         <div class="install-actions">
           <button class="install-btn" (click)="installApp()">
-            Install App
+            {{ 'pwa.installButton' | translate }}
           </button>
           <button class="dismiss-btn" (click)="dismiss()">
             ✕

@@ -38,7 +38,7 @@
               "src/manifest.webmanifest",
               {
                 "glob": "**/*",
-                "input": "public/icons",
+                "input": "src/icons",
                 "output": "icons/"
               }
             ],

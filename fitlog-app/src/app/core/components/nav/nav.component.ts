@@ -2,11 +2,12 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { LanguageSwitcherComponent } from '../language-switcher/language-switcher.component';
+import { TranslatePipe } from '../../pipes/translate.pipe';
 
 @Component({
   selector: 'app-nav',
   standalone: true,
-  imports: [CommonModule, RouterModule, LanguageSwitcherComponent],
+  imports: [CommonModule, RouterModule, LanguageSwitcherComponent, TranslatePipe],
   template: `
     <nav class="app-nav">
       <div class="app-nav-container">
@@ -15,8 +16,8 @@ import { LanguageSwitcherComponent } from '../language-switcher/language-switche
         </div>
         
         <div class="app-nav-links">
-          <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">Home</a>
-          <a routerLink="/trends" routerLinkActive="active">Trends</a>
+          <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">{{ 'nav.home' | translate }}</a>
+          <a routerLink="/trends" routerLinkActive="active">{{ 'nav.trends' | translate }}</a>
           <app-language-switcher></app-language-switcher>
         </div>
       </div>
