@@ -3,6 +3,8 @@ import { CommonModule } from '@angular/common';
 import { Chart, ChartConfiguration, ChartType } from 'chart.js';
 import { ChartService } from '../../services/chart.service';
 import { DateValidationService } from '../../../../core/services/date-validation.service';
+import { UserService } from '../../../../core/services/user.service';
+import { BmiService } from '../../../../core/services/bmi.service';
 
 @Component({
   selector: 'app-weight-chart',
@@ -11,6 +13,26 @@ import { DateValidationService } from '../../../../core/services/date-validation
   template: `
     <div class="chart-container">
       <h3>Weight Trend</h3>
+      
+      <!-- Statistics -->
+      <div class="stats-container" *ngIf="hasData">
+        <div class="stat-card">
+          <span class="stat-label">Average</span>
+          <span class="stat-value">{{ averageWeight.toFixed(1) }} kg</span>
+        </div>
+        <div class="stat-card" [ngClass]="weightChange >= 0 ? 'stat-gained' : 'stat-lost'">
+          <span class="stat-label">{{ weightChange >= 0 ? 'Gained' : 'Lost' }}</span>
+          <span class="stat-value">{{ Math.abs(weightChange).toFixed(1) }} kg</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-label">Current</span>
+          <span class="stat-value">{{ currentWeight.toFixed(1) }} kg</span>
+        </div>
+        <div class="stat-card" *ngIf="idealWeightMin > 0">
+          <span class="stat-label">Ideal Range</span>
+          <span class="stat-value">{{ idealWeightMin.toFixed(0) }}-{{ idealWeightMax.toFixed(0) }} kg</span>
+        </div>
+      </div>
       
       <div class="chart-controls">
         <button 
@@ -90,6 +112,53 @@ import { DateValidationService } from '../../../../core/services/date-validation
         margin: 0.5rem 0;
       }
     }
+    
+    .stats-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+    
+    .stat-card {
+      background-color: var(--color-bg-offset);
+      padding: 1rem;
+      border-radius: 8px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      border: 2px solid var(--color-border);
+      
+      .stat-label {
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        color: var(--color-text-secondary);
+        margin-bottom: 0.5rem;
+      }
+      
+      .stat-value {
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: var(--color-primary);
+      }
+    }
+    
+    .stat-gained {
+      border-color: var(--color-danger, #ef4444);
+      
+      .stat-value {
+        color: var(--color-danger, #ef4444);
+      }
+    }
+    
+    .stat-lost {
+      border-color: var(--color-success, #10b981);
+      
+      .stat-value {
+        color: var(--color-success, #10b981);
+      }
+    }
   `]
 })
 export class WeightChartComponent implements OnInit, AfterViewInit {
@@ -104,8 +173,18 @@ export class WeightChartComponent implements OnInit, AfterViewInit {
     { label: 'All', days: 5 * 365 } // 5 years max
   ];
   
-  selectedRange = 90; // Default to 3 months
+  selectedRange = 30; // Default to 1 month
   hasData = false;
+  
+  // Statistics
+  averageWeight = 0;
+  currentWeight = 0;
+  weightChange = 0;
+  idealWeightMin = 0;
+  idealWeightMax = 0;
+  
+  // For template
+  Math = Math;
   
   chartData: ChartConfiguration['data'] = {
     datasets: [],
@@ -150,7 +229,9 @@ export class WeightChartComponent implements OnInit, AfterViewInit {
   
   constructor(
     private chartService: ChartService,
-    private dateValidationService: DateValidationService
+    private dateValidationService: DateValidationService,
+    private userService: UserService,
+    private bmiService: BmiService
   ) {}
   
   async ngOnInit() {
@@ -175,16 +256,96 @@ export class WeightChartComponent implements OnInit, AfterViewInit {
         return;
       }
       
+      // Calculate statistics
+      const weights = chartData.datasets[0].data as number[];
+      if (weights.length > 0) {
+        this.averageWeight = weights.reduce((a, b) => a + b, 0) / weights.length;
+        this.currentWeight = weights[weights.length - 1];
+        const firstWeight = weights[0];
+        this.weightChange = this.currentWeight - firstWeight;
+      }
+      
+      // Get ideal weight range
+      const profile = await this.userService.getUserProfile();
+      if (profile && profile.heightCm > 0) {
+        const idealRange = this.bmiService.getIdealWeightRange(profile.heightCm);
+        this.idealWeightMin = idealRange.min;
+        this.idealWeightMax = idealRange.max;
+        
+        // Add ideal weight lines to chart
+        const idealMinLine = {
+          label: 'Ideal Min',
+          data: chartData.labels.map(() => idealRange.min),
+          borderColor: 'rgba(16, 185, 129, 0.5)',
+          backgroundColor: 'transparent',
+          borderDash: [5, 5],
+          borderWidth: 2,
+          pointRadius: 0,
+          fill: false
+        };
+        
+        const idealMaxLine = {
+          label: 'Ideal Max',
+          data: chartData.labels.map(() => idealRange.max),
+          borderColor: 'rgba(16, 185, 129, 0.5)',
+          backgroundColor: 'transparent',
+          borderDash: [5, 5],
+          borderWidth: 2,
+          pointRadius: 0,
+          fill: false
+        };
+        
+        chartData.datasets.push(idealMinLine, idealMaxLine);
+      }
+      
       // Destroy existing chart if it exists
       if (this.chart) {
         this.chart.destroy();
       }
       
+      // Update chart options to show legend
+      const updatedOptions: ChartConfiguration['options'] = {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+          x: {
+            type: 'time',
+            time: {
+              unit: 'day',
+              displayFormats: {
+                day: 'MMM d'
+              }
+            },
+            title: {
+              display: true,
+              text: 'Date'
+            }
+          },
+          y: {
+            beginAtZero: false,
+            title: {
+              display: true,
+              text: 'Weight (kg)'
+            }
+          }
+        },
+        plugins: {
+          legend: {
+            display: true,
+            position: 'top' as const
+          },
+          tooltip: {
+            mode: 'index',
+            intersect: false
+          }
+        }
+      };
+      
       // Create new chart
       this.chart = new Chart(this.chartCanvas.nativeElement, {
         type: 'line',
         data: chartData,
-        options: this.chartOptions
+        options: updatedOptions
       });
     } catch (error) {
       console.error('Error loading chart data:', error);

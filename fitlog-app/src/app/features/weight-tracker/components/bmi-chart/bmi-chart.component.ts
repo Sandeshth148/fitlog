@@ -160,7 +160,7 @@ export class BmiChartComponent implements OnInit, AfterViewInit {
     { label: 'All', days: 5 * 365 } // 5 years max
   ];
   
-  selectedRange = 90; // Default to 3 months
+  selectedRange = 30; // Default to 1 month
   hasData = false;
   hasHeight = false;
   
