@@ -1,18 +1,19 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { TranslatePipe } from '../../pipes/translate.pipe';
 
 @Component({
   selector: 'app-footer',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, TranslatePipe],
   template: `
     <footer class="app-footer">
       <div class="footer-container">
         <p class="copyright">
-          © {{ currentYear }} FitLog. All rights reserved.
+          {{ 'footer.copyright' | translate: {year: currentYear} }}
         </p>
         <p class="tagline">
-          Track your fitness journey, one entry at a time.
+          {{ 'footer.tagline' | translate }}
         </p>
       </div>
     </footer>

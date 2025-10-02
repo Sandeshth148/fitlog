@@ -5,12 +5,63 @@ import { ButtonComponent } from '../../../../shared/components/button/button.com
 import { BmiDisplayComponent } from '../bmi-display/bmi-display.component';
 import { UserService } from '../../../../core/services/user.service';
 import { BmiService } from '../../../../core/services/bmi.service';
+import { TranslatePipe } from '../../../../core/pipes/translate.pipe';
 
 @Component({
   selector: 'app-entry-list',
   standalone: true,
-  imports: [CommonModule, ButtonComponent, BmiDisplayComponent],
-  templateUrl: './entry-list.component.html',
+  imports: [CommonModule, ButtonComponent, BmiDisplayComponent, TranslatePipe],
+  template: `
+    <div class="entry-list-container">
+      @if (entries.length > 0) {
+        <h3>{{ 'home.recentEntries' | translate }}</h3>
+        <ul class="entry-list">
+          @for (entry of entries; track entry.id) {
+            <li class="entry-item">
+              <div class="entry-details">
+                <div class="entry-date-time">
+                  <span class="entry-date">{{ entry.date | date: 'mediumDate' }}</span>
+                  @if (entry.time) {
+                    <span class="entry-time">{{ entry.time }}</span>
+                  }
+                </div>
+                <span class="entry-weight" [attr.data-unit]="entry.units || 'kg'">
+                  {{ entry.weightKg.toFixed(1) }}
+                </span>
+                
+                @if (hasHeight && entry.bmi && showBmi) {
+                  <div class="entry-bmi">
+                    <app-bmi-display 
+                      [bmi]="entry.bmi" 
+                      [heightCm]="userHeight"
+                      [showIdealWeight]="false">
+                    </app-bmi-display>
+                  </div>
+                }
+                
+                @if (entry.notes) {
+                  <span class="entry-notes">{{ entry.notes }}</span>
+                }
+              </div>
+              <div class="entry-actions">
+                <app-button (clicked)="entryEdited.emit(entry)" variant="ghost" size="sm">
+                  {{ 'form.edit' | translate }}
+                </app-button>
+                <app-button (clicked)="entryDeleted.emit(entry.id)" variant="ghost" size="sm" class="delete-btn">
+                  {{ 'form.delete' | translate }}
+                </app-button>
+              </div>
+            </li>
+          }
+        </ul>
+      } @else {
+        <div class="no-entries-placeholder">
+          <p>{{ 'home.noEntries' | translate }}</p>
+          <p>{{ 'home.getStarted' | translate }}</p>
+        </div>
+      }
+    </div>
+  `,
   styleUrls: ['./entry-list.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })

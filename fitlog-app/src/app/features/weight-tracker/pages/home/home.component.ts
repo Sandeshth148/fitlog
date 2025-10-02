@@ -6,12 +6,48 @@ import { EntryListComponent } from '../../components/entry-list/entry-list.compo
 import { EntryFormComponent } from '../../components/entry-form/entry-form.component';
 import { ButtonComponent } from '../../../../shared/components/button/button.component';
 import { WeightEntry } from '../../models/weight-entry.model';
+import { TranslatePipe } from '../../../../core/pipes/translate.pipe';
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CommonModule, EntryListComponent, EntryFormComponent, ButtonComponent],
-  templateUrl: './home.component.html',
+  imports: [CommonModule, EntryListComponent, EntryFormComponent, ButtonComponent, TranslatePipe],
+  template: `
+    <section class="fitlog-container">
+      <header class="fitlog-header">
+        <h1>{{ 'home.title' | translate }}</h1>
+        <app-button (clicked)="theme.toggleTheme()" [ariaLabel]="'Toggle theme'">
+          {{ theme.getTheme() === 'dark' ? 'Light' : 'Dark' }} Mode
+        </app-button>
+      </header>
+
+      <main class="fitlog-main">
+        <p>{{ 'home.subtitle' | translate }}</p>
+        
+        @if (!isEntryFormVisible()) {
+          <app-button (clicked)="showEntryForm()" ariaLabel="Add new weight entry" size="lg" class="fab">
+            {{ 'home.addEntry' | translate }}
+          </app-button>
+        }
+
+        @if (isEntryFormVisible()) {
+          <app-entry-form 
+            [entry]="editingEntry()" 
+            (entrySaved)="onEntrySaved($event)" 
+            (formCancelled)="hideEntryForm()">
+          </app-entry-form>
+        }
+
+        @if (!isEntryFormVisible()) {
+          <app-entry-list 
+            [entries]="entries()" 
+            (entryEdited)="showEntryForm($event)" 
+            (entryDeleted)="onEntryDeleted($event)">
+          </app-entry-list>
+        }
+      </main>
+    </section>
+  `,
   styleUrls: ['./home.component.scss'],
 })
 export class HomeComponent implements OnInit {

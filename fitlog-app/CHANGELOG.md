@@ -2,6 +2,27 @@
 
 All notable changes to this project will be documented in this file.
 
+## [v1.5.0] - 2025-01-03
+
+### Added
+- **Complete Translation Coverage**: All UI components now support 7 languages
+- **Angular 20 Control Flow**: Migrated to @if, @for, @switch syntax
+- **Enhanced Translation System**: Parameter support for dynamic content
+- **Technical Documentation**: Comprehensive Angular 20 features guide
+
+### Changed
+- **Modern Syntax**: Updated all templates to use Angular 20 control flow
+- **Translation Architecture**: Reactive translation pipe with change detection
+- **Component Structure**: Full standalone component implementation
+
+### Technical
+- **Performance**: Reduced bundle size with new control flow syntax
+- **Type Safety**: Enhanced template type checking
+- **Developer Experience**: Better IntelliSense and error detection
+- **Interview Ready**: Comprehensive documentation for technical discussions
+
+---
+
 ## [v1.4.0] - 2025-01-03
 
 ### Added

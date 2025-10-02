@@ -5,52 +5,60 @@ import { ChartService } from '../../services/chart.service';
 import { DateValidationService } from '../../../../core/services/date-validation.service';
 import { UserService } from '../../../../core/services/user.service';
 import { BmiService } from '../../../../core/services/bmi.service';
+import { TranslatePipe } from '../../../../core/pipes/translate.pipe';
 
 @Component({
   selector: 'app-weight-chart',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, TranslatePipe],
   template: `
     <div class="chart-container">
-      <h3>Weight Trend</h3>
+      <h3>{{ 'trends.weightTrend' | translate }}</h3>
       
       <!-- Statistics -->
-      <div class="stats-container" *ngIf="hasData">
-        <div class="stat-card">
-          <span class="stat-label">Average</span>
-          <span class="stat-value">{{ averageWeight.toFixed(1) }} kg</span>
+      @if (hasData) {
+        <div class="stats-container">
+          <div class="stat-card">
+            <span class="stat-label">{{ 'stats.average' | translate }}</span>
+            <span class="stat-value">{{ averageWeight.toFixed(1) }} kg</span>
+          </div>
+          <div class="stat-card" [ngClass]="weightChange >= 0 ? 'stat-gained' : 'stat-lost'">
+            <span class="stat-label">{{ weightChange >= 0 ? ('stats.gained' | translate) : ('stats.lost' | translate) }}</span>
+            <span class="stat-value">{{ Math.abs(weightChange).toFixed(1) }} kg</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-label">{{ 'stats.current' | translate }}</span>
+            <span class="stat-value">{{ currentWeight.toFixed(1) }} kg</span>
+          </div>
+          @if (idealWeightMin > 0) {
+            <div class="stat-card">
+              <span class="stat-label">{{ 'stats.idealRange' | translate }}</span>
+              <span class="stat-value">{{ idealWeightMin.toFixed(0) }}-{{ idealWeightMax.toFixed(0) }} kg</span>
+            </div>
+          }
         </div>
-        <div class="stat-card" [ngClass]="weightChange >= 0 ? 'stat-gained' : 'stat-lost'">
-          <span class="stat-label">{{ weightChange >= 0 ? 'Gained' : 'Lost' }}</span>
-          <span class="stat-value">{{ Math.abs(weightChange).toFixed(1) }} kg</span>
-        </div>
-        <div class="stat-card">
-          <span class="stat-label">Current</span>
-          <span class="stat-value">{{ currentWeight.toFixed(1) }} kg</span>
-        </div>
-        <div class="stat-card" *ngIf="idealWeightMin > 0">
-          <span class="stat-label">Ideal Range</span>
-          <span class="stat-value">{{ idealWeightMin.toFixed(0) }}-{{ idealWeightMax.toFixed(0) }} kg</span>
-        </div>
-      </div>
+      }
       
       <div class="chart-controls">
-        <button 
-          *ngFor="let range of timeRanges" 
-          [class.active]="selectedRange === range.days"
-          (click)="setTimeRange(range.days)">
-          {{ range.label }}
-        </button>
+        @for (range of timeRanges; track range.days) {
+          <button 
+            [class.active]="selectedRange === range.days"
+            (click)="setTimeRange(range.days)">
+            {{ range.label }}
+          </button>
+        }
       </div>
       
       <div class="chart-wrapper">
         <canvas #chartCanvas></canvas>
       </div>
       
-      <div class="chart-empty" *ngIf="!hasData">
-        <p>No weight data available for the selected time range.</p>
-        <p>Add some weight entries to see your trend!</p>
-      </div>
+      @if (!hasData) {
+        <div class="chart-empty">
+          <p>{{ 'trends.noData' | translate }}</p>
+          <p>{{ 'trends.addEntries' | translate }}</p>
+        </div>
+      }
     </div>
   `,
   styles: [`

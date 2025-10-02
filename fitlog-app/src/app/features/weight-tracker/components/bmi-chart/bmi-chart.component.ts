@@ -3,42 +3,47 @@ import { CommonModule } from '@angular/common';
 import { Chart, ChartConfiguration, ChartType } from 'chart.js';
 import { ChartService } from '../../services/chart.service';
 import { UserService } from '../../../../core/services/user.service';
+import { TranslatePipe } from '../../../../core/pipes/translate.pipe';
+import { TranslationService } from '../../../../core/services/translation.service';
 
 @Component({
   selector: 'app-bmi-chart',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, TranslatePipe],
   template: `
     <div class="chart-container">
-      <h3>BMI Trend</h3>
+      <h3>{{ 'trends.bmiTrend' | translate }}</h3>
       
       <!-- BMI Statistics -->
-      <div class="stats-container" *ngIf="hasData">
-        <div class="stat-card">
-          <span class="stat-label">Average BMI</span>
-          <span class="stat-value">{{ averageBmi.toFixed(1) }}</span>
+      @if (hasData) {
+        <div class="stats-container">
+          <div class="stat-card">
+            <span class="stat-label">{{ 'stats.averageBmi' | translate }}</span>
+            <span class="stat-value">{{ averageBmi.toFixed(1) }}</span>
+          </div>
+          <div class="stat-card" [ngClass]="getBmiChangeClass()">
+            <span class="stat-label">{{ bmiChange >= 0 ? ('stats.increased' | translate) : ('stats.decreased' | translate) }}</span>
+            <span class="stat-value">{{ Math.abs(bmiChange).toFixed(1) }}</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-label">{{ 'stats.currentBmi' | translate }}</span>
+            <span class="stat-value">{{ currentBmi.toFixed(1) }}</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-label">{{ 'stats.status' | translate }}</span>
+            <span class="stat-value" [style.color]="getBmiStatusColor()">{{ getBmiStatusTranslated() }}</span>
+          </div>
         </div>
-        <div class="stat-card" [ngClass]="getBmiChangeClass()">
-          <span class="stat-label">{{ bmiChange >= 0 ? 'Increased' : 'Decreased' }}</span>
-          <span class="stat-value">{{ Math.abs(bmiChange).toFixed(1) }}</span>
-        </div>
-        <div class="stat-card">
-          <span class="stat-label">Current BMI</span>
-          <span class="stat-value">{{ currentBmi.toFixed(1) }}</span>
-        </div>
-        <div class="stat-card">
-          <span class="stat-label">Status</span>
-          <span class="stat-value" [style.color]="getBmiStatusColor()">{{ getBmiStatus() }}</span>
-        </div>
-      </div>
+      }
       
       <div class="chart-controls">
-        <button 
-          *ngFor="let range of timeRanges" 
-          [class.active]="selectedRange === range.days"
-          (click)="setTimeRange(range.days)">
-          {{ range.label }}
-        </button>
+        @for (range of timeRanges; track range.days) {
+          <button 
+            [class.active]="selectedRange === range.days"
+            (click)="setTimeRange(range.days)">
+            {{ range.label }}
+          </button>
+        }
       </div>
       
       <div class="chart-wrapper">
@@ -48,26 +53,31 @@ import { UserService } from '../../../../core/services/user.service';
       <div class="bmi-legend">
         <div class="legend-item">
           <span class="color-box underweight"></span>
-          <span>Underweight (&lt;18.5)</span>
+          <span>{{ 'bmi.underweight' | translate }} (&lt;18.5)</span>
         </div>
         <div class="legend-item">
           <span class="color-box normal"></span>
-          <span>Normal (18.5-24.9)</span>
+          <span>{{ 'bmi.normal' | translate }} (18.5-24.9)</span>
         </div>
         <div class="legend-item">
           <span class="color-box overweight"></span>
-          <span>Overweight (25-29.9)</span>
+          <span>{{ 'bmi.overweight' | translate }} (25-29.9)</span>
         </div>
         <div class="legend-item">
           <span class="color-box obese"></span>
-          <span>Obese (≥30)</span>
+          <span>{{ 'bmi.obese' | translate }} (≥30)</span>
         </div>
       </div>
       
-      <div class="chart-empty" *ngIf="!hasData">
-        <p *ngIf="hasHeight">No BMI data available for the selected time range.</p>
-        <p *ngIf="!hasHeight">Please set your height in the profile to see BMI data.</p>
-      </div>
+      @if (!hasData) {
+        <div class="chart-empty">
+          @if (hasHeight) {
+            <p>{{ 'trends.noData' | translate }}</p>
+          } @else {
+            <p>Please set your height in the profile to see BMI data.</p>
+          }
+        </div>
+      }
     </div>
   `,
   styles: [`
@@ -302,7 +312,8 @@ export class BmiChartComponent implements OnInit, AfterViewInit {
   
   constructor(
     private chartService: ChartService,
-    private userService: UserService
+    private userService: UserService,
+    private translationService: TranslationService
   ) {}
   
   ngOnInit() {
@@ -377,5 +388,12 @@ export class BmiChartComponent implements OnInit, AfterViewInit {
     if (this.currentBmi < 25) return 'var(--color-success, #10b981)';
     if (this.currentBmi < 30) return 'var(--color-warning, #f59e0b)';
     return 'var(--color-danger, #ef4444)';
+  }
+  
+  getBmiStatusTranslated(): string {
+    if (this.currentBmi < 18.5) return this.translationService.translate('bmi.underweight');
+    if (this.currentBmi < 25) return this.translationService.translate('bmi.normal');
+    if (this.currentBmi < 30) return this.translationService.translate('bmi.overweight');
+    return this.translationService.translate('bmi.obese');
   }
 }

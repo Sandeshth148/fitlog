@@ -50,7 +50,17 @@ export class TranslationService {
 
   translate(key: string): string {
     const currentLang = this.currentLanguage$.value;
-    const translation = this.getNestedTranslation(this.translations[currentLang], key);
+    
+    // Try to get translation in current language
+    let translation = this.getNestedTranslation(this.translations[currentLang], key);
+    
+    // If not found and not English, fallback to English
+    if (!translation && currentLang !== 'en') {
+      translation = this.getNestedTranslation(this.translations['en'], key);
+      console.log(`🌐 Translation fallback: "${key}" not found in ${currentLang}, using English: "${translation}"`);
+    }
+    
+    // If still not found, return the key itself
     return translation || key;
   }
 
@@ -80,27 +90,29 @@ export class TranslationService {
     this.translations = {
       en: {
         nav: { home: 'Home', trends: 'Trends' },
-        home: { title: 'Weight Tracker', addEntry: 'Add Entry', noEntries: 'No weight entries yet', getStarted: 'Add your first weight entry to get started!' },
+        home: { title: 'Weight Tracker', subtitle: 'Your personal weight tracking assistant.', addEntry: 'Add Entry', noEntries: 'No weight entries yet', getStarted: 'Add your first weight entry to get started!', recentEntries: 'Recent Entries' },
         trends: { title: 'Health Trends', subtitle: 'Track your progress and visualize your fitness journey over time.', weightTrend: 'Weight Trend', bmiTrend: 'BMI Trend', noData: 'No data available for the selected time range.', addEntries: 'Add some weight entries to see your trend!' },
         stats: { average: 'Average', current: 'Current', gained: 'Gained', lost: 'Lost', increased: 'Increased', decreased: 'Decreased', idealRange: 'Ideal Range', status: 'Status', averageBmi: 'Average BMI', currentBmi: 'Current BMI' },
         bmi: { underweight: 'Underweight', normal: 'Normal', overweight: 'Overweight', obese: 'Obese' },
         form: { date: 'Date', weight: 'Weight', notes: 'Notes', height: 'Height', save: 'Save', cancel: 'Cancel', edit: 'Edit', delete: 'Delete' },
+        setup: { title: 'Welcome to FitLog', intro: 'Let\'s set up your profile to get started tracking your weight and health metrics.' },
         footer: { copyright: '© {{year}} FitLog. All rights reserved.', tagline: 'Track your fitness journey, one entry at a time.' },
         pwa: { installTitle: 'Install FitLog', installSubtitle: 'Get the full app experience', installButton: 'Install App' }
       },
       hi: {
         nav: { home: 'होम', trends: 'रुझान' },
-        home: { title: 'वजन ट्रैकर', addEntry: 'एंट्री जोड़ें', noEntries: 'अभी तक कोई वजन एंट्री नहीं', getStarted: 'शुरू करने के लिए अपनी पहली वजन एंट्री जोड़ें!' },
+        home: { title: 'वजन ट्रैकर', subtitle: 'आपका व्यक्तिगत वजन ट्रैकिंग सहायक।', addEntry: 'एंट्री जोड़ें', noEntries: 'अभी तक कोई वजन एंट्री नहीं', getStarted: 'शुरू करने के लिए अपनी पहली वजन एंट्री जोड़ें!', recentEntries: 'हाल की एंट्रीज' },
         trends: { title: 'स्वास्थ्य रुझान', subtitle: 'अपनी प्रगति को ट्रैक करें और समय के साथ अपनी फिटनेस यात्रा को देखें।', weightTrend: 'वजन रुझान', bmiTrend: 'बीएमआई रुझान', noData: 'चयनित समय सीमा के लिए कोई डेटा उपलब्ध नहीं।', addEntries: 'अपना रुझान देखने के लिए कुछ वजन एंट्री जोड़ें!' },
         stats: { average: 'औसत', current: 'वर्तमान', gained: 'बढ़ा', lost: 'घटा', increased: 'बढ़ा', decreased: 'घटा', idealRange: 'आदर्श सीमा', status: 'स्थिति', averageBmi: 'औसत बीएमआई', currentBmi: 'वर्तमान बीएमआई' },
         bmi: { underweight: 'कम वजन', normal: 'सामान्य', overweight: 'अधिक वजन', obese: 'मोटापा' },
         form: { date: 'तारीख', weight: 'वजन', notes: 'नोट्स', height: 'ऊंचाई', save: 'सेव करें', cancel: 'रद्द करें', edit: 'संपादित करें', delete: 'हटाएं' },
+        setup: { title: 'FitLog में आपका स्वागत है', intro: 'आइए अपना प्रोफ़ाइल सेट करें और अपने वजन और स्वास्थ्य मेट्रिक्स को ट्रैक करना शुरू करें।' },
         footer: { copyright: '© {{year}} FitLog. सभी अधिकार सुरक्षित।', tagline: 'अपनी फिटनेस यात्रा को ट्रैक करें, एक बार में एक एंट्री।' },
         pwa: { installTitle: 'FitLog इंस्टॉल करें', installSubtitle: 'पूरा ऐप अनुभव प्राप्त करें', installButton: 'ऐप इंस्टॉल करें' }
       },
       kn: {
         nav: { home: 'ಮುಖ್ಯಪುಟ', trends: 'ಪ್ರವೃತ್ತಿಗಳು' },
-        home: { title: 'ತೂಕ ಟ್ರ್ಯಾಕರ್', addEntry: 'ಎಂಟ್ರಿ ಸೇರಿಸಿ', noEntries: 'ಇನ್ನೂ ಯಾವುದೇ ತೂಕ ಎಂಟ್ರಿಗಳಿಲ್ಲ', getStarted: 'ಪ್ರಾರಂಭಿಸಲು ನಿಮ್ಮ ಮೊದಲ ತೂಕ ಎಂಟ್ರಿಯನ್ನು ಸೇರಿಸಿ!' },
+        home: { title: 'ತೂಕ ಟ್ರ್ಯಾಕರ್', subtitle: 'ನಿಮ್ಮ ವೈಯಕ್ತಿಕ ತೂಕ ಟ್ರ್ಯಾಕಿಂಗ್ ಸಹಾಯಕ।', addEntry: 'ಎಂಟ್ರಿ ಸೇರಿಸಿ', noEntries: 'ಇನ್ನೂ ಯಾವುದೇ ತೂಕ ಎಂಟ್ರಿಗಳಿಲ್ಲ', getStarted: 'ಪ್ರಾರಂಭಿಸಲು ನಿಮ್ಮ ಮೊದಲ ತೂಕ ಎಂಟ್ರಿಯನ್ನು ಸೇರಿಸಿ!', recentEntries: 'ಇತ್ತೀಚಿನ ಎಂಟ್ರಿಗಳು' },
         trends: { title: 'ಆರೋಗ್ಯ ಪ್ರವೃತ್ತಿಗಳು', subtitle: 'ನಿಮ್ಮ ಪ್ರಗತಿಯನ್ನು ಟ್ರ್ಯಾಕ್ ಮಾಡಿ ಮತ್ತು ಕಾಲಾನಂತರದಲ್ಲಿ ನಿಮ್ಮ ಫಿಟ್ನೆಸ್ ಪ್ರಯಾಣವನ್ನು ದೃಶ್ಯೀಕರಿಸಿ।', weightTrend: 'ತೂಕ ಪ್ರವೃತ್ತಿ', bmiTrend: 'BMI ಪ್ರವೃತ್ತಿ', noData: 'ಆಯ್ಕೆಮಾಡಿದ ಸಮಯ ವ್ಯಾಪ್ತಿಗೆ ಯಾವುದೇ ಡೇಟಾ ಲಭ್ಯವಿಲ್ಲ।', addEntries: 'ನಿಮ್ಮ ಪ್ರವೃತ್ತಿಯನ್ನು ನೋಡಲು ಕೆಲವು ತೂಕ ಎಂಟ್ರಿಗಳನ್ನು ಸೇರಿಸಿ!' },
         stats: { average: 'ಸರಾಸರಿ', current: 'ಪ್ರಸ್ತುತ', gained: 'ಹೆಚ್ಚಾಗಿದೆ', lost: 'ಕಳೆದುಕೊಂಡಿದೆ', increased: 'ಹೆಚ್ಚಾಗಿದೆ', decreased: 'ಕಡಿಮೆಯಾಗಿದೆ', idealRange: 'ಆದರ್ಶ ವ್ಯಾಪ್ತಿ', status: 'ಸ್ಥಿತಿ', averageBmi: 'ಸರಾಸರಿ BMI', currentBmi: 'ಪ್ರಸ್ತುತ BMI' },
         bmi: { underweight: 'ಕಡಿಮೆ ತೂಕ', normal: 'ಸಾಮಾನ್ಯ', overweight: 'ಅಧಿಕ ತೂಕ', obese: 'ಸ್ಥೂಲಕಾಯತೆ' },

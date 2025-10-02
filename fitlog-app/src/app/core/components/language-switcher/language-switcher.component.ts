@@ -51,6 +51,7 @@ import { TranslationService, Language } from '../../services/translation.service
     
     .current-flag {
       font-size: 1rem;
+      margin-bottom: 5px;
     }
     
     .current-name {

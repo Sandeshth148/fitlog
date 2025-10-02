@@ -3,17 +3,18 @@ import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { HeightInputComponent } from '../../components/height-input/height-input.component';
 import { StorageService } from '../../../../core/services/storage.service';
+import { TranslatePipe } from '../../../../core/pipes/translate.pipe';
 
 @Component({
   selector: 'app-setup',
   standalone: true,
-  imports: [CommonModule, HeightInputComponent],
+  imports: [CommonModule, HeightInputComponent, TranslatePipe],
   template: `
     <div class="setup-container">
       <div class="setup-content">
-        <h1>Welcome to FitLog</h1>
+        <h1>{{ 'setup.title' | translate }}</h1>
         <p class="setup-intro">
-          Let's set up your profile to get started tracking your weight and health metrics.
+          {{ 'setup.intro' | translate }}
         </p>
         
         <app-height-input (heightSaved)="onHeightSaved($event)"></app-height-input>
