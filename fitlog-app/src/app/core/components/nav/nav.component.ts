@@ -15,7 +15,7 @@ import { RouterModule } from '@angular/router';
         
         <div class="app-nav-links">
           <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">Home</a>
-          <a routerLink="/charts" routerLinkActive="active">Charts</a>
+          <a routerLink="/trends" routerLinkActive="active">Trends</a>
         </div>
       </div>
     </nav>

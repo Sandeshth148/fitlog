@@ -12,6 +12,26 @@ import { UserService } from '../../../../core/services/user.service';
     <div class="chart-container">
       <h3>BMI Trend</h3>
       
+      <!-- BMI Statistics -->
+      <div class="stats-container" *ngIf="hasData">
+        <div class="stat-card">
+          <span class="stat-label">Average BMI</span>
+          <span class="stat-value">{{ averageBmi.toFixed(1) }}</span>
+        </div>
+        <div class="stat-card" [ngClass]="getBmiChangeClass()">
+          <span class="stat-label">{{ bmiChange >= 0 ? 'Increased' : 'Decreased' }}</span>
+          <span class="stat-value">{{ Math.abs(bmiChange).toFixed(1) }}</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-label">Current BMI</span>
+          <span class="stat-value">{{ currentBmi.toFixed(1) }}</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-label">Status</span>
+          <span class="stat-value" [style.color]="getBmiStatusColor()">{{ getBmiStatus() }}</span>
+        </div>
+      </div>
+      
       <div class="chart-controls">
         <button 
           *ngFor="let range of timeRanges" 
@@ -146,6 +166,53 @@ import { UserService } from '../../../../core/services/user.service';
         margin: 0.5rem 0;
       }
     }
+    
+    .stats-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+    
+    .stat-card {
+      background-color: var(--color-bg-offset);
+      padding: 1rem;
+      border-radius: 8px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      border: 2px solid var(--color-border);
+      
+      .stat-label {
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        color: var(--color-text-secondary);
+        margin-bottom: 0.5rem;
+      }
+      
+      .stat-value {
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: var(--color-primary);
+      }
+    }
+    
+    .stat-increased {
+      border-color: var(--color-danger, #ef4444);
+      
+      .stat-value {
+        color: var(--color-danger, #ef4444);
+      }
+    }
+    
+    .stat-decreased {
+      border-color: var(--color-success, #10b981);
+      
+      .stat-value {
+        color: var(--color-success, #10b981);
+      }
+    }
   `]
 })
 export class BmiChartComponent implements OnInit, AfterViewInit {
@@ -163,6 +230,14 @@ export class BmiChartComponent implements OnInit, AfterViewInit {
   selectedRange = 30; // Default to 1 month
   hasData = false;
   hasHeight = false;
+  
+  // BMI Statistics
+  averageBmi = 0;
+  currentBmi = 0;
+  bmiChange = 0;
+  
+  // For template
+  Math = Math;
   
   chartData: ChartConfiguration['data'] = {
     datasets: [],
@@ -260,6 +335,15 @@ export class BmiChartComponent implements OnInit, AfterViewInit {
         return;
       }
       
+      // Calculate BMI statistics
+      const bmiValues = chartData.datasets[0].data as number[];
+      if (bmiValues.length > 0) {
+        this.averageBmi = bmiValues.reduce((a, b) => a + b, 0) / bmiValues.length;
+        this.currentBmi = bmiValues[bmiValues.length - 1];
+        const firstBmi = bmiValues[0];
+        this.bmiChange = this.currentBmi - firstBmi;
+      }
+      
       // Destroy existing chart if it exists
       if (this.chart) {
         this.chart.destroy();
@@ -275,5 +359,23 @@ export class BmiChartComponent implements OnInit, AfterViewInit {
       console.error('Error loading BMI chart data:', error);
       this.hasData = false;
     }
+  }
+  
+  getBmiChangeClass(): string {
+    return this.bmiChange >= 0 ? 'stat-increased' : 'stat-decreased';
+  }
+  
+  getBmiStatus(): string {
+    if (this.currentBmi < 18.5) return 'Underweight';
+    if (this.currentBmi < 25) return 'Normal';
+    if (this.currentBmi < 30) return 'Overweight';
+    return 'Obese';
+  }
+  
+  getBmiStatusColor(): string {
+    if (this.currentBmi < 18.5) return 'var(--color-info, #3b82f6)';
+    if (this.currentBmi < 25) return 'var(--color-success, #10b981)';
+    if (this.currentBmi < 30) return 'var(--color-warning, #f59e0b)';
+    return 'var(--color-danger, #ef4444)';
   }
 }

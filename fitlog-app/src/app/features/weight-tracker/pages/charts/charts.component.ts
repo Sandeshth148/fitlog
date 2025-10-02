@@ -9,9 +9,9 @@ import { BmiChartComponent } from '../../components/bmi-chart/bmi-chart.componen
   imports: [CommonModule, WeightChartComponent, BmiChartComponent],
   template: `
     <div class="charts-container">
-      <h2>Weight & BMI Charts</h2>
+      <h2>Health Trends</h2>
       <p class="charts-intro">
-        Visualize your weight journey and BMI trends over time.
+        Track your progress and visualize your fitness journey over time.
       </p>
       
       <app-weight-chart></app-weight-chart>

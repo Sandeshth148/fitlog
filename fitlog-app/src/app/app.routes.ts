@@ -11,12 +11,17 @@ export const routes: Routes = [
     canActivate: [HeightSetupGuard]
   },
   {
-    path: 'charts',
+    path: 'trends',
     loadComponent: () =>
       import('./features/weight-tracker/pages/charts/charts.component').then(
         (m) => m.ChartsComponent
       ),
     canActivate: [HeightSetupGuard]
+  },
+  {
+    path: 'charts',
+    redirectTo: 'trends',
+    pathMatch: 'full'
   },
   {
     path: 'setup',
