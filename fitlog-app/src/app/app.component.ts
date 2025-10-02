@@ -4,11 +4,12 @@ import { RouterOutlet } from '@angular/router';
 import { registerChartComponents } from './core/config/chart-config';
 import { NavComponent } from './core/components/nav/nav.component';
 import { FooterComponent } from './core/components/footer/footer.component';
+import { PwaInstallComponent } from './core/components/pwa-install/pwa-install.component';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule, RouterOutlet, NavComponent, FooterComponent],
+  imports: [CommonModule, RouterOutlet, NavComponent, FooterComponent, PwaInstallComponent],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })

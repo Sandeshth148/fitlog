@@ -1,11 +1,12 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
+import { LanguageSwitcherComponent } from '../language-switcher/language-switcher.component';
 
 @Component({
   selector: 'app-nav',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, LanguageSwitcherComponent],
   template: `
     <nav class="app-nav">
       <div class="app-nav-container">
@@ -16,6 +17,7 @@ import { RouterModule } from '@angular/router';
         <div class="app-nav-links">
           <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">Home</a>
           <a routerLink="/trends" routerLinkActive="active">Trends</a>
+          <app-language-switcher></app-language-switcher>
         </div>
       </div>
     </nav>
