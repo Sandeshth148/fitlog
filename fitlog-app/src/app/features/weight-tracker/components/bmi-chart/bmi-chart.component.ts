@@ -230,13 +230,15 @@ export class BmiChartComponent implements OnInit, AfterViewInit {
     private userService: UserService
   ) {}
   
-  async ngOnInit() {
-    // Check if user has height set
-    const profile = await this.userService.getUserProfile();
-    this.hasHeight = !!profile && profile.heightCm > 0;
+  ngOnInit() {
+    // We'll check height and load data in ngAfterViewInit
   }
   
   async ngAfterViewInit() {
+    // Check if user has height set
+    const profile = await this.userService.getUserProfile();
+    this.hasHeight = !!profile && profile.heightCm > 0;
+    
     if (this.hasHeight) {
       await this.loadChartData();
     }
