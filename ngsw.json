@@ -1,6 +1,6 @@
 {
   "configVersion": 1,
-  "timestamp": 1758472229742,
+  "timestamp": 1759431913840,
   "index": "/fitlog/index.html",
   "assetGroups": [
     {
@@ -11,11 +11,17 @@
         "ignoreVary": true
       },
       "urls": [
-        "/fitlog/chunk-CTEM6TGR.js",
-        "/fitlog/chunk-HPIRJEMX.js",
+        "/fitlog/chunk-5RAZTL4U.js",
+        "/fitlog/chunk-ELVXF2IM.js",
+        "/fitlog/chunk-GP2YQGWX.js",
+        "/fitlog/chunk-HVAJOYMA.js",
+        "/fitlog/chunk-M7RYGGP3.js",
+        "/fitlog/chunk-MLNXXAGG.js",
+        "/fitlog/chunk-NYMZTBAC.js",
+        "/fitlog/chunk-PLKGOXEB.js",
         "/fitlog/favicon.ico",
         "/fitlog/index.html",
-        "/fitlog/main-ALRUTLCI.js",
+        "/fitlog/main-QU6XML2O.js",
         "/fitlog/manifest.webmanifest",
         "/fitlog/polyfills-5CFQRCPP.js",
         "/fitlog/styles-4LLMHWQ7.css"
@@ -44,8 +50,14 @@
   ],
   "dataGroups": [],
   "hashTable": {
-    "/fitlog/chunk-CTEM6TGR.js": "8a35bd5d7fd1111e0f364ae1a4e1c7837dc8d405",
-    "/fitlog/chunk-HPIRJEMX.js": "23ee344815c24f7e8bb4c30e76ae93d905e8b3e1",
+    "/fitlog/chunk-5RAZTL4U.js": "c44acd51cd98e800f51640d51b8a2fb586df23fe",
+    "/fitlog/chunk-ELVXF2IM.js": "3e833a6754e04d11455ad9c6543a784d355df57b",
+    "/fitlog/chunk-GP2YQGWX.js": "098de3ebb5c58c771e4d5c1f7173634ed7930817",
+    "/fitlog/chunk-HVAJOYMA.js": "19f614f011ef045e46dac3f42e1bf8b68c43d946",
+    "/fitlog/chunk-M7RYGGP3.js": "743257e31fb8e6bea280dbe7b9fee06ab14041d3",
+    "/fitlog/chunk-MLNXXAGG.js": "4c4457805c78114d22c21fb45a931752110baf81",
+    "/fitlog/chunk-NYMZTBAC.js": "6c823c508dff66cd289c77305a05771f9e299001",
+    "/fitlog/chunk-PLKGOXEB.js": "86528e1afb8df82febdbcea2505f577420866003",
     "/fitlog/favicon.ico": "357c6b088ea3861a2f9aa1f524d3183e975fef49",
     "/fitlog/icons/icon-128x128.png": "f912963bdc6d5a38d8f1dd0afbaab2ce8d657acb",
     "/fitlog/icons/icon-144x144.png": "b155fd5f2fd5d2ea7760721063003c4cd95fd783",
@@ -55,8 +67,8 @@
     "/fitlog/icons/icon-512x512.png": "1de182f76f7329dfa8f9fcdd1fdcdd695bea6a99",
     "/fitlog/icons/icon-72x72.png": "aa88a6096bd973be7f6d7a5489bfa6bc2463f8c4",
     "/fitlog/icons/icon-96x96.png": "7fb8f59c30ce2ff12c700321a0b39e14b3dc8f95",
-    "/fitlog/index.html": "0ddb551c208d94838fa90c4204cdac8d7e73dd61",
-    "/fitlog/main-ALRUTLCI.js": "2ca71bbfc289587b1631a820555bce3b710aec45",
+    "/fitlog/index.html": "85a8ad11b82f1b41fbbe75628bddbe4cf15d24ba",
+    "/fitlog/main-QU6XML2O.js": "951f2028799746427cd2a60cfe1d07b8da236b4e",
     "/fitlog/manifest.webmanifest": "304b4b4e1d672eb9cf633fedfba335f2abd8cb7a",
     "/fitlog/polyfills-5CFQRCPP.js": "f2241e9a25858f895ce299d15f6f22e849e2fd72",
     "/fitlog/styles-4LLMHWQ7.css": "da5daab0107680752443450845ac68939b524e27"
