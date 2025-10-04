@@ -2,12 +2,13 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { LanguageSwitcherComponent } from '../language-switcher/language-switcher.component';
+import { ThemeSelectorComponent } from '../theme-selector/theme-selector.component';
 import { TranslatePipe } from '../../pipes/translate.pipe';
 
 @Component({
   selector: 'app-nav',
   standalone: true,
-  imports: [CommonModule, RouterModule, LanguageSwitcherComponent, TranslatePipe],
+  imports: [CommonModule, RouterModule, LanguageSwitcherComponent, ThemeSelectorComponent, TranslatePipe],
   template: `
     <nav class="app-nav">
       <div class="app-nav-container">
@@ -18,7 +19,11 @@ import { TranslatePipe } from '../../pipes/translate.pipe';
         <div class="app-nav-links">
           <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">{{ 'nav.home' | translate }}</a>
           <a routerLink="/trends" routerLinkActive="active">{{ 'nav.trends' | translate }}</a>
-          <app-language-switcher></app-language-switcher>
+          
+          <div class="nav-controls">
+            <app-theme-selector></app-theme-selector>
+            <app-language-switcher></app-language-switcher>
+          </div>
         </div>
       </div>
     </nav>
@@ -35,7 +40,6 @@ import { TranslatePipe } from '../../pipes/translate.pipe';
       display: flex;
       justify-content: space-between;
       align-items: center;
-      max-width: 1200px;
       margin: 0 auto;
       padding: 0 1rem;
     }
@@ -45,8 +49,13 @@ import { TranslatePipe } from '../../pipes/translate.pipe';
       font-size: 1.5rem;
       font-weight: 700;
       text-decoration: none;
+      letter-spacing: -0.025em;
+      transition: opacity 0.2s;
     }
-    
+
+    .app-nav-logo a:hover {
+      opacity: 0.9;
+    }
     .app-nav-links {
       display: flex;
       gap: 1.5rem;
@@ -77,6 +86,30 @@ import { TranslatePipe } from '../../pipes/translate.pipe';
             border-radius: 2px;
           }
         }
+      }
+
+      .nav-controls {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+      }
+
+      .theme-toggle-btn {
+        background: none;
+        border: none;
+        color: white;
+        font-size: 1.2rem;
+        cursor: pointer;
+        padding: 0.5rem;
+        border-radius: 6px;
+        transition: background-color 0.2s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .theme-toggle-btn:hover {
+        background-color: rgba(255, 255, 255, 0.1);
       }
     }
   `]

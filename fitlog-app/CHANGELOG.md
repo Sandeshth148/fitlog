@@ -2,6 +2,23 @@
 
 All notable changes to this project will be documented in this file.
 
+## [v1.5.1] - 2025-01-04
+
+### Fixed
+- **Language Dropdown**: Fixed click-outside behavior - now closes when clicking elsewhere
+- **Theme Support**: Language dropdown now properly inherits dark/light theme colors
+- **Navigation Layout**: Moved theme toggle button to navigation bar beside language switcher
+- **Logo Styling**: Improved FitLog logo positioning and typography
+- **Responsive Design**: Removed max-width constraint for better full-width layout
+
+### Technical
+- **Click-Outside Directive**: Added HostListener for better dropdown UX
+- **Theme Variables**: Updated dropdown CSS to use CSS custom properties
+- **Component Cleanup**: Removed duplicate theme button from home component
+- **Tech Debt Documentation**: Created comprehensive tech debt tracking system
+
+---
+
 ## [v1.5.0] - 2025-01-03
 
 ### Added

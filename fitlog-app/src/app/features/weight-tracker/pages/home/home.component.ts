@@ -16,9 +16,6 @@ import { TranslatePipe } from '../../../../core/pipes/translate.pipe';
     <section class="fitlog-container">
       <header class="fitlog-header">
         <h1>{{ 'home.title' | translate }}</h1>
-        <app-button (clicked)="theme.toggleTheme()" [ariaLabel]="'Toggle theme'">
-          {{ theme.getTheme() === 'dark' ? 'Light' : 'Dark' }} Mode
-        </app-button>
       </header>
 
       <main class="fitlog-main">
