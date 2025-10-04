@@ -1,6 +1,6 @@
 {
   "configVersion": 1,
-  "timestamp": 1759603790616,
+  "timestamp": 1759611228670,
   "index": "/fitlog/index.html",
   "assetGroups": [
     {
@@ -11,21 +11,21 @@
         "ignoreVary": true
       },
       "urls": [
-        "/fitlog/chunk-ARADMWZJ.js",
-        "/fitlog/chunk-CJBC42E2.js",
-        "/fitlog/chunk-FL7XW4ZQ.js",
-        "/fitlog/chunk-GU3UCHMM.js",
-        "/fitlog/chunk-L7RU235P.js",
-        "/fitlog/chunk-T63XOCCV.js",
-        "/fitlog/chunk-TCC2XHH2.js",
-        "/fitlog/chunk-WJENWAM6.js",
-        "/fitlog/chunk-YMLRRCKA.js",
+        "/fitlog/chunk-3VBIX3FP.js",
+        "/fitlog/chunk-AC3PIYBT.js",
+        "/fitlog/chunk-HTL4NQZ4.js",
+        "/fitlog/chunk-KP75NJWC.js",
+        "/fitlog/chunk-MXPGSLFD.js",
+        "/fitlog/chunk-R2GCNQZO.js",
+        "/fitlog/chunk-SQUJ4YZX.js",
+        "/fitlog/chunk-UZNBMF7B.js",
+        "/fitlog/chunk-ZZE4VLXA.js",
         "/fitlog/favicon.ico",
         "/fitlog/index.html",
-        "/fitlog/main-GRUMBKQ3.js",
+        "/fitlog/main-6PN4ETS7.js",
         "/fitlog/manifest.webmanifest",
         "/fitlog/polyfills-5CFQRCPP.js",
-        "/fitlog/styles-4LLMHWQ7.css"
+        "/fitlog/styles-5VUJPD6X.css"
       ],
       "patterns": []
     },
@@ -52,15 +52,15 @@
   ],
   "dataGroups": [],
   "hashTable": {
-    "/fitlog/chunk-ARADMWZJ.js": "bca1a75165262bb016b56373f3ee96d603947c9a",
-    "/fitlog/chunk-CJBC42E2.js": "850103f64b58ae7a343f1fd8d530d9e5574b5789",
-    "/fitlog/chunk-FL7XW4ZQ.js": "f2e1911bd3b04144adb5028baaf1dfc22ff1354b",
-    "/fitlog/chunk-GU3UCHMM.js": "767aff69dd72ae2187859f9340f932b10537ec83",
-    "/fitlog/chunk-L7RU235P.js": "32d149b2944b52adb840138056957c41443d39e6",
-    "/fitlog/chunk-T63XOCCV.js": "76361e493a64768f6d0eef8af368641916bf7341",
-    "/fitlog/chunk-TCC2XHH2.js": "004d065f2a7e07a34e4074de60cdfc73558f0194",
-    "/fitlog/chunk-WJENWAM6.js": "0f13fb5a8ae7531bf77edbb0b74a63aa3818062c",
-    "/fitlog/chunk-YMLRRCKA.js": "96e2da60274213a8554210aa21491278269a8bf3",
+    "/fitlog/chunk-3VBIX3FP.js": "60b111e365875c1dbe6be46c09bea8612aceaaab",
+    "/fitlog/chunk-AC3PIYBT.js": "3e1ae175ca790391a44a3d4a17a1a0d12e04c974",
+    "/fitlog/chunk-HTL4NQZ4.js": "60b67f9f0d9aa8d823b0ee6a2ab548e1533482e7",
+    "/fitlog/chunk-KP75NJWC.js": "9be42b6a31fd88f313dddb1d05129ffb3fe8f829",
+    "/fitlog/chunk-MXPGSLFD.js": "1421ce562f696bba3d4941559d2f7021dbfa9144",
+    "/fitlog/chunk-R2GCNQZO.js": "0ffb2f6a64a02ba915ed58a88bfcde1f888e0c51",
+    "/fitlog/chunk-SQUJ4YZX.js": "4b26f511b77681227007d81140d5b60f273cc7e5",
+    "/fitlog/chunk-UZNBMF7B.js": "55fe2cea2802edebb5567b4dcb2b8fc9d9fdd6b2",
+    "/fitlog/chunk-ZZE4VLXA.js": "9ff314397f37c4ce39d7648a8696c462d334c77e",
     "/fitlog/favicon.ico": "357c6b088ea3861a2f9aa1f524d3183e975fef49",
     "/fitlog/icons/icon-128x128.png": "75534da70e878f53148966660deb09a7b8770e70",
     "/fitlog/icons/icon-144x144.png": "75534da70e878f53148966660deb09a7b8770e70",
@@ -71,11 +71,11 @@
     "/fitlog/icons/icon-512x512.png": "a27c969b08807c93088a3c5d7f345140bc372fe1",
     "/fitlog/icons/icon-72x72.png": "75534da70e878f53148966660deb09a7b8770e70",
     "/fitlog/icons/icon-96x96.png": "75534da70e878f53148966660deb09a7b8770e70",
-    "/fitlog/index.html": "06484bc875a907a656d26a6286d98f874dd63cb3",
-    "/fitlog/main-GRUMBKQ3.js": "f0212490449bd2d629ca967308ed395a51c2492d",
+    "/fitlog/index.html": "767ea2929fc418a26e035b380956b693d61ae903",
+    "/fitlog/main-6PN4ETS7.js": "fbe796008c2cc7c7518d1a3eb410a83d90449fee",
     "/fitlog/manifest.webmanifest": "304b4b4e1d672eb9cf633fedfba335f2abd8cb7a",
     "/fitlog/polyfills-5CFQRCPP.js": "f2241e9a25858f895ce299d15f6f22e849e2fd72",
-    "/fitlog/styles-4LLMHWQ7.css": "da5daab0107680752443450845ac68939b524e27"
+    "/fitlog/styles-5VUJPD6X.css": "aca897ad34200e8c33c023f7cbd8e2db20a171f1"
   },
   "navigationUrls": [
     {
