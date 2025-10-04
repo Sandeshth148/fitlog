@@ -7,4 +7,19 @@
 .app-main {
   flex: 1;
   background-color: var(--color-bg-offset);
+  padding: 1.5rem 0;
+  overflow-x: hidden; /* Prevent horizontal scrolling */
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .app-main {
+    padding: 1rem 0;
+  }
+}
+
+@media (max-width: 480px) {
+  .app-main {
+    padding: 0.75rem 0;
+  }
 }

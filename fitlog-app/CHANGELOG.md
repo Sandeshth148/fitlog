@@ -2,6 +2,26 @@
 
 All notable changes to this project will be documented in this file.
 
+## [v1.6.0] - 2025-10-05
+
+### Added
+- **Mobile Responsive Design**: Enhanced mobile experience with hamburger menu
+- **Complete Translation System**: Fixed translation issues across all components
+- **Responsive Grid System**: Added flexible grid layout for all screen sizes
+
+### Fixed
+- **Navigation Bar**: Improved mobile navigation with slide-out menu
+- **Height Component Translations**: Added missing translations for all languages
+- **Translation Consistency**: Fixed mixed language issues in UI components
+- **Responsive Typography**: Adjusted font sizes for better readability on small screens
+
+### Technical
+- **Media Queries**: Implemented comprehensive breakpoints for all screen sizes
+- **Translation Architecture**: Enhanced translation pipe with better fallback handling
+- **CSS Custom Properties**: Expanded theme variables for consistent styling
+
+---
+
 ## [v1.5.1] - 2025-01-04
 
 ### Fixed

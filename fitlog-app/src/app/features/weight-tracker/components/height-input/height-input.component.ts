@@ -3,15 +3,16 @@ import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { UserService } from '../../../../core/services/user.service';
 import { UserProfileUtils } from '../../../../core/models/user-profile.model';
+import { TranslatePipe } from '../../../../core/pipes/translate.pipe';
 
 @Component({
   selector: 'app-height-input',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, TranslatePipe],
   template: `
     <div class="height-input-container">
-      <h2>{{ isUpdate ? 'Update Your Height' : 'Enter Your Height' }}</h2>
-      <p>We'll use this to calculate your BMI and ideal weight range.</p>
+      <h2>{{ (isUpdate ? 'form.updateHeight' : 'form.enterHeight') | translate }}</h2>
+      <p>{{ 'form.heightDescription' | translate }}</p>
       
       <form [formGroup]="heightForm" (ngSubmit)="onSubmit()">
         <div class="unit-selector-tabs">
@@ -19,17 +20,17 @@ import { UserProfileUtils } from '../../../../core/models/user-profile.model';
             type="button" 
             [class.active]="selectedUnit === 'cm'"
             (click)="setUnit('cm')"
-          >Centimeters</button>
+          >{{ 'form.centimeters' | translate }}</button>
           <button 
             type="button" 
             [class.active]="selectedUnit === 'ft'"
             (click)="setUnit('ft')"
-          >Feet & Inches</button>
+          >{{ 'form.feetInches' | translate }}</button>
         </div>
         
         <!-- Centimeters input -->
         <div class="form-field" *ngIf="selectedUnit === 'cm'">
-          <label for="height-cm">Height (cm)</label>
+          <label for="height-cm">{{ 'form.heightCm' | translate }}</label>
           <div class="input-group">
             <input 
               id="height-cm" 
@@ -44,10 +45,10 @@ import { UserProfileUtils } from '../../../../core/models/user-profile.model';
           </div>
           <div class="validation-error" *ngIf="heightForm.get('heightCm')?.invalid && heightForm.get('heightCm')?.touched">
             <span *ngIf="heightForm.get('heightCm')?.errors?.['required']">
-              Height is required.
+              {{ 'form.heightRequired' | translate }}
             </span>
             <span *ngIf="heightForm.get('heightCm')?.errors?.['min']">
-              Height must be greater than 0.
+              {{ 'form.heightPositive' | translate }}
             </span>
           </div>
         </div>
@@ -56,7 +57,7 @@ import { UserProfileUtils } from '../../../../core/models/user-profile.model';
         <div *ngIf="selectedUnit === 'ft'">
           <div class="form-field-group">
             <div class="form-field">
-              <label for="height-ft">Feet</label>
+              <label for="height-ft">{{ 'form.feet' | translate }}</label>
               <input 
                 id="height-ft" 
                 type="number" 
@@ -68,7 +69,7 @@ import { UserProfileUtils } from '../../../../core/models/user-profile.model';
               >
             </div>
             <div class="form-field">
-              <label for="height-in">Inches</label>
+              <label for="height-in">{{ 'form.inches' | translate }}</label>
               <input 
                 id="height-in" 
                 type="number" 
@@ -83,25 +84,25 @@ import { UserProfileUtils } from '../../../../core/models/user-profile.model';
           </div>
           <div class="validation-error" *ngIf="(heightForm.get('feet')?.invalid && heightForm.get('feet')?.touched) || (heightForm.get('inches')?.invalid && heightForm.get('inches')?.touched)">
             <span *ngIf="heightForm.get('feet')?.errors?.['required'] || heightForm.get('inches')?.errors?.['required']">
-              Both feet and inches are required.
+              {{ 'form.bothRequired' | translate }}
             </span>
             <span *ngIf="heightForm.get('feet')?.errors?.['min'] || heightForm.get('inches')?.errors?.['min']">
-              Values must be 0 or greater.
+              {{ 'form.valuesPositive' | translate }}
             </span>
             <span *ngIf="heightForm.get('inches')?.errors?.['max']">
-              Inches must be less than 12.
+              {{ 'form.inchesLessThan12' | translate }}
             </span>
           </div>
         </div>
         
         <div class="height-preview" *ngIf="heightCm > 0">
-          <span>Your height: {{ heightCm.toFixed(1) }} cm</span>
+          <span>{{ 'form.yourHeight' | translate }}: {{ heightCm.toFixed(1) }} cm</span>
           <span *ngIf="selectedUnit === 'ft'">({{ feetInchesDisplay }})</span>
           <span *ngIf="selectedUnit === 'cm'">({{ feetInchesFromCm }})</span>
         </div>
         
         <button type="submit" [disabled]="!isFormValid()" class="primary-button">
-          {{ isUpdate ? 'Update Height' : 'Save Height' }}
+          {{ (isUpdate ? 'form.updateHeight' : 'form.saveHeight') | translate }}
         </button>
       </form>
     </div>
