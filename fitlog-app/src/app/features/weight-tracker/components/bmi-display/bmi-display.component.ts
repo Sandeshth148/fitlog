@@ -239,7 +239,15 @@ export class BmiDisplayComponent implements OnInit {
   
   getBmiCategoryKey(): string {
     const category = this.bmiService.getBmiCategory(this.bmi).toLowerCase();
-    return category.replace(' ', '');
+    
+    // Map to exact translation keys
+    switch(category) {
+      case 'underweight': return 'underweight';
+      case 'normal': return 'normal';
+      case 'overweight': return 'overweight';
+      case 'obese': return 'obese';
+      default: return category.replace(' ', '');
+    }
   }
   
   getBmiColorClass(): string {

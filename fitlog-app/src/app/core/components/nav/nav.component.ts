@@ -1,14 +1,17 @@
-import { Component, HostListener } from '@angular/core';
+import { Component, HostListener, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { LanguageSwitcherComponent } from '../language-switcher/language-switcher.component';
 import { ThemeSelectorComponent } from '../theme-selector/theme-selector.component';
 import { TranslatePipe } from '../../pipes/translate.pipe';
+import { UserProfileComponent } from '../user-profile/user-profile.component';
+import { UserService } from '../../services/user.service';
+import { UserProfile } from '../../models/user-profile.model';
 
 @Component({
   selector: 'app-nav',
   standalone: true,
-  imports: [CommonModule, RouterModule, LanguageSwitcherComponent, ThemeSelectorComponent, TranslatePipe],
+  imports: [CommonModule, RouterModule, LanguageSwitcherComponent, ThemeSelectorComponent, TranslatePipe, UserProfileComponent],
   template: `
     <nav class="app-nav">
       <div class="app-nav-container">
@@ -31,6 +34,14 @@ import { TranslatePipe } from '../../pipes/translate.pipe';
           <div class="nav-controls">
             <app-theme-selector></app-theme-selector>
             <app-language-switcher></app-language-switcher>
+            <button class="profile-button" (click)="openProfile()" [attr.aria-label]="'nav.profile' | translate">
+              <div class="avatar-container" *ngIf="userProfile && userProfile.avatarUrl">
+                <img [src]="userProfile.avatarUrl" alt="User avatar" class="user-avatar" />
+              </div>
+              <div class="avatar-placeholder" *ngIf="!userProfile || !userProfile.avatarUrl">
+                {{ getProfileInitials() }}
+              </div>
+            </button>
           </div>
         </div>
         
@@ -38,6 +49,9 @@ import { TranslatePipe } from '../../pipes/translate.pipe';
         <div class="mobile-menu-overlay" *ngIf="mobileMenuOpen" (click)="closeMobileMenu()"></div>
       </div>
     </nav>
+    
+    <!-- User Profile Modal -->
+    <app-user-profile #userProfileModal></app-user-profile>
   `,
   styles: [`
     .app-nav {
@@ -161,6 +175,50 @@ import { TranslatePipe } from '../../pipes/translate.pipe';
       .theme-toggle-btn:hover {
         background-color: rgba(255, 255, 255, 0.1);
       }
+      
+      .profile-button {
+        background: none;
+        border: none;
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        overflow: hidden;
+        cursor: pointer;
+        padding: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 2px solid rgba(255, 255, 255, 0.7);
+        transition: transform 0.2s, border-color 0.2s;
+        
+        &:hover {
+          transform: scale(1.05);
+          border-color: white;
+        }
+      }
+      
+      .avatar-container {
+        width: 100%;
+        height: 100%;
+      }
+      
+      .user-avatar {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+      
+      .avatar-placeholder {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: var(--color-primary-dark);
+        color: white;
+        font-weight: bold;
+        font-size: 14px;
+      }
     }
     
     /* Responsive styles */
@@ -219,6 +277,13 @@ import { TranslatePipe } from '../../pipes/translate.pipe';
 })
 export class NavComponent {
   mobileMenuOpen = false;
+  userProfile: UserProfile | null = null;
+  
+  @ViewChild('userProfileModal') userProfileModal!: UserProfileComponent;
+  
+  constructor(private userService: UserService) {
+    this.loadUserProfile();
+  }
   
   toggleMobileMenu(): void {
     this.mobileMenuOpen = !this.mobileMenuOpen;
@@ -244,5 +309,32 @@ export class NavComponent {
     if (window.innerWidth > 768 && this.mobileMenuOpen) {
       this.closeMobileMenu();
     }
+  }
+  
+  async loadUserProfile(): Promise<void> {
+    try {
+      this.userProfile = await this.userService.getUserProfile();
+    } catch (error) {
+      console.error('Error loading user profile:', error);
+    }
+  }
+  
+  openProfile(): void {
+    if (this.userProfileModal) {
+      this.userProfileModal.open();
+    }
+  }
+  
+  getProfileInitials(): string {
+    if (!this.userProfile || !this.userProfile.displayName) {
+      return '👤';
+    }
+    
+    return this.userProfile.displayName
+      .split(' ')
+      .map((part: string) => part.charAt(0))
+      .join('')
+      .toUpperCase()
+      .substring(0, 2);
   }
 }

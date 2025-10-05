@@ -5,6 +5,12 @@ export interface UserProfile {
   /** Unique identifier for the profile */
   id: string;
   
+  /** User's display name */
+  displayName?: string;
+  
+  /** User's avatar image (data URL or path) */
+  avatarUrl?: string;
+  
   /** User's height in centimeters (canonical storage unit) */
   heightCm: number;
   
@@ -57,6 +63,8 @@ export class UserProfileUtils {
     
     return {
       id,
+      displayName: partialProfile.displayName || '',
+      avatarUrl: partialProfile.avatarUrl || '',
       heightCm: partialProfile.heightCm || 0,
       preferredUnits: {
         height: partialProfile.preferredUnits?.height || 'cm',
