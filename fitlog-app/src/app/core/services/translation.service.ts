@@ -90,21 +90,7 @@ export class TranslationService {
   private loadTranslations() {
     this.translations = {
       en: {
-        nav: { home: 'Home', trends: 'Trends', profile: 'Profile' },
-        profile: {
-          title: 'Your Profile',
-          displayName: 'Display Name',
-          namePlaceholder: 'Enter your name',
-          changeAvatar: 'Change Avatar',
-          height: 'Height',
-          currentHeight: 'Current Height',
-          editHeight: 'Edit Height',
-          save: 'Save Changes',
-          cancel: 'Cancel',
-          preferences: 'Preferences',
-          theme: 'Theme',
-          language: 'Language'
-        },
+        nav: { home: 'Home', trends: 'Trends' },
         home: { title: 'Weight Tracker', subtitle: 'Your personal weight tracking assistant.', addEntry: 'Add Entry', noEntries: 'No weight entries yet', getStarted: 'Add your first weight entry to get started!', recentEntries: 'Recent Entries' },
         trends: { title: 'Health Trends', subtitle: 'Track your progress and visualize your fitness journey over time.', weightTrend: 'Weight Trend', bmiTrend: 'BMI Trend', noData: 'No data available for the selected time range.', addEntries: 'Add some weight entries to see your trend!' },
         stats: { average: 'Average', current: 'Current', gained: 'Gained', lost: 'Lost', increased: 'Increased', decreased: 'Decreased', idealRange: 'Ideal Range', status: 'Status', averageBmi: 'Average BMI', currentBmi: 'Current BMI' },
@@ -140,21 +126,7 @@ export class TranslationService {
         pwa: { installTitle: 'Install FitLog', installSubtitle: 'Get the full app experience', installButton: 'Install App' }
       },
       hi: {
-        nav: { home: 'होम', trends: 'रुझान', profile: 'प्रोफाइल' },
-        profile: {
-          title: 'आपका प्रोफाइल',
-          displayName: 'नाम',
-          namePlaceholder: 'अपना नाम दर्ज करें',
-          changeAvatar: 'प्रोफाइल चित्र बदलें',
-          height: 'ऊंचाई',
-          currentHeight: 'वर्तमान ऊंचाई',
-          editHeight: 'ऊंचाई संपादित करें',
-          save: 'परिवर्तन सहेजें',
-          cancel: 'रद्द करें',
-          preferences: 'प्राथमिकताएं',
-          theme: 'थीम',
-          language: 'भाषा'
-        },
+        nav: { home: 'होम', trends: 'रुझान' },
         home: { title: 'वजन ट्रैकर', subtitle: 'आपका व्यक्तिगत वजन ट्रैकिंग सहायक।', addEntry: 'एंट्री जोड़ें', noEntries: 'अभी तक कोई वजन एंट्री नहीं', getStarted: 'शुरू करने के लिए अपनी पहली वजन एंट्री जोड़ें!', recentEntries: 'हाल की एंट्रीज' },
         trends: { title: 'स्वास्थ्य रुझान', subtitle: 'अपनी प्रगति को ट्रैक करें और समय के साथ अपनी फिटनेस यात्रा को देखें।', weightTrend: 'वजन रुझान', bmiTrend: 'बीएमआई रुझान', noData: 'चयनित समय सीमा के लिए कोई डेटा उपलब्ध नहीं।', addEntries: 'अपना रुझान देखने के लिए कुछ वजन एंट्री जोड़ें!' },
         stats: { average: 'औसत', current: 'वर्तमान', gained: 'बढ़ा', lost: 'घटा', increased: 'बढ़ा', decreased: 'घटा', idealRange: 'आदर्श सीमा', status: 'स्थिति', averageBmi: 'औसत बीएमआई', currentBmi: 'वर्तमान बीएमआई' },

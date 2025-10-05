@@ -94,24 +94,6 @@ export class UserService {
   }
   
   /**
-   * Update user display name
-   * @param displayName The user's display name
-   * @returns Promise resolving to the updated profile
-   */
-  async updateDisplayName(displayName: string): Promise<UserProfile> {
-    return this.saveUserProfile({ displayName });
-  }
-  
-  /**
-   * Update user avatar
-   * @param avatarUrl The URL or data URL of the user's avatar image
-   * @returns Promise resolving to the updated profile
-   */
-  async updateAvatar(avatarUrl: string): Promise<UserProfile> {
-    return this.saveUserProfile({ avatarUrl });
-  }
-  
-  /**
    * Check if user has completed initial setup (has height set)
    * @returns Promise resolving to boolean indicating if profile is complete
    */

@@ -2,31 +2,6 @@
 
 All notable changes to this project will be documented in this file.
 
-## [v1.7.1] - 2025-10-05
-
-### Technical
-- **Component Structure**: Improved component architecture by splitting HTML, CSS, and TypeScript into separate files
-- **Code Organization**: Better organized profile component with proper file structure
-- **Build Optimization**: Fixed build issues and improved compilation performance
-- **Import Management**: Fixed circular dependencies and properly organized imports
-
----
-
-## [v1.7.0] - 2025-10-05
-
-### Added
-- **User Profile**: Added profile section accessible from the navigation bar
-- **Avatar Management**: Users can now add and change their profile picture
-- **Name Customization**: Added ability to set and edit display name
-- **Preferences Section**: Centralized theme and language selection in profile
-
-### Fixed
-- **BMI Translation**: Fixed BMI category translation issues
-- **Navigation Layout**: Improved navigation bar layout with profile on the right
-- **Translation Consistency**: Added missing translations for profile section
-
----
-
 ## [v1.6.2] - 2025-10-05
 
 ### Fixed
