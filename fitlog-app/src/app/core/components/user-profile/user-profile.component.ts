@@ -1,32 +1,78 @@
-import { Component, OnInit, signal } from '@angular/core';
+import { Component, OnInit, OnDestroy, signal, ChangeDetectorRef, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { UserService } from '../../services/user.service';
 import { UserProfile } from '../../models/user-profile.model';
 import { TranslatePipe } from '../../pipes/translate.pipe';
+import { TranslationService } from '../../services/translation.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-user-profile',
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule, TranslatePipe],
   templateUrl: './user-profile.component.html',
-  styleUrls: ['./user-profile.component.scss']
+  styleUrls: ['./user-profile.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class UserProfileComponent implements OnInit {
+export class UserProfileComponent implements OnInit, OnDestroy {
   profileForm!: FormGroup;
   isModalOpen = signal(false);
   avatarPreview = signal<string | null>(null);
   userProfile = signal<UserProfile | null>(null);
   isSubmitting = signal(false);
   
+  private langSubscription!: Subscription;
+  private profileSubscription!: Subscription;
+  
   constructor(
     private fb: FormBuilder,
-    private userService: UserService
+    private userService: UserService,
+    private translationService: TranslationService,
+    private cdr: ChangeDetectorRef
   ) {}
   
   ngOnInit(): void {
     this.initForm();
     this.loadUserProfile();
+    
+    // Subscribe to language changes to update the UI
+    this.langSubscription = this.translationService.currentLanguage$.subscribe(() => {
+      // Trigger change detection to update translations
+      this.cdr.markForCheck();
+    });
+    
+    // Subscribe to profile changes
+    this.profileSubscription = this.userService.userProfile$.subscribe(profile => {
+      if (profile) {
+        console.log('UserProfileComponent: Profile updated from observable:', profile);
+        this.userProfile.set(profile);
+        
+        // Update form values if modal is not open (to avoid overwriting user edits)
+        if (!this.isModalOpen()) {
+          this.profileForm.patchValue({
+            name: profile.name || ''
+          });
+          
+          if (profile.avatar) {
+            this.avatarPreview.set(profile.avatar);
+          }
+        }
+        
+        this.cdr.markForCheck();
+      }
+    });
+  }
+  
+  ngOnDestroy(): void {
+    // Clean up subscriptions
+    if (this.langSubscription) {
+      this.langSubscription.unsubscribe();
+    }
+    
+    if (this.profileSubscription) {
+      this.profileSubscription.unsubscribe();
+    }
   }
   
   private initForm(): void {
@@ -37,17 +83,28 @@ export class UserProfileComponent implements OnInit {
   }
   
   private async loadUserProfile(): Promise<void> {
-    const profile = await this.userService.getUserProfile();
-    this.userProfile.set(profile);
-    
-    if (profile) {
-      this.profileForm.patchValue({
-        name: profile.name || ''
-      });
+    try {
+      console.log('UserProfileComponent: Loading user profile...');
+      const profile = await this.userService.getUserProfile();
+      console.log('UserProfileComponent: Profile loaded:', profile);
       
-      if (profile.avatar) {
-        this.avatarPreview.set(profile.avatar);
+      this.userProfile.set(profile);
+      
+      if (profile) {
+        this.profileForm.patchValue({
+          name: profile.name || ''
+        });
+        
+        if (profile.avatar) {
+          this.avatarPreview.set(profile.avatar);
+          console.log('UserProfileComponent: Avatar preview set');
+        }
       }
+      
+      // Ensure UI updates
+      this.cdr.detectChanges();
+    } catch (error) {
+      console.error('UserProfileComponent: Error loading profile:', error);
     }
   }
   
@@ -114,13 +171,13 @@ export class UserProfileComponent implements OnInit {
   
   get nameErrorMessage(): string {
     if (this.nameControl?.errors?.['required']) {
-      return 'Name is required';
+      return 'profile.validation.nameRequired';
     }
     if (this.nameControl?.errors?.['minlength']) {
-      return 'Name must be at least 2 characters';
+      return 'profile.validation.nameMinLength';
     }
     if (this.nameControl?.errors?.['maxlength']) {
-      return 'Name cannot exceed 50 characters';
+      return 'profile.validation.nameMaxLength';
     }
     return '';
   }

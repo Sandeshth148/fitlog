@@ -10,31 +10,56 @@ import { StorageService } from './storage.service';
   providedIn: 'root'
 })
 export class UserService {
-  private readonly STORAGE_KEY = 'fitlog-user-profile';
   private userProfileSubject = new BehaviorSubject<UserProfile | null>(null);
   
   /** Observable for user profile changes */
   userProfile$ = this.userProfileSubject.asObservable();
   
-  constructor() {
+  constructor(private storageService: StorageService) {
     // Load profile from storage on initialization
     this.loadProfileFromStorage();
   }
   
   /**
-   * Load user profile from localStorage
+   * Load user profile from storage (IndexedDB or localStorage)
    */
-  private loadProfileFromStorage(): void {
+  private async loadProfileFromStorage(): Promise<void> {
     console.log('👤 UserService: Loading profile from storage...');
     try {
-      const profileJson = localStorage.getItem(this.STORAGE_KEY);
-      console.log('👤 UserService: Raw profile JSON:', profileJson);
-      if (profileJson) {
-        const profile = JSON.parse(profileJson) as UserProfile;
-        console.log('👤 UserService: Parsed profile:', profile);
-        this.userProfileSubject.next(profile);
+      // Check if we have a profile in IndexedDB
+      const hasProfileInIndexedDB = await this.storageService.hasUserProfile();
+      
+      if (hasProfileInIndexedDB) {
+        // Load from IndexedDB
+        console.log('👤 UserService: Profile exists in IndexedDB, loading...');
+        const profile = await this.storageService.getUserProfile();
+        console.log('👤 UserService: Retrieved profile from IndexedDB:', profile);
+        if (profile) {
+          this.userProfileSubject.next(profile);
+        }
       } else {
-        console.log('👤 UserService: No profile found in storage');
+        // Try to load from localStorage (for migration)
+        console.log('👤 UserService: No profile in IndexedDB, checking localStorage...');
+        const profileJson = localStorage.getItem('fitlog-user-profile');
+        
+        if (profileJson) {
+          console.log('👤 UserService: Found profile in localStorage, migrating to IndexedDB...');
+          try {
+            const profile = JSON.parse(profileJson) as UserProfile;
+            console.log('👤 UserService: Parsed profile from localStorage:', profile);
+            
+            // Save to IndexedDB
+            await this.storageService.saveUserProfile(profile);
+            console.log('👤 UserService: Profile migrated to IndexedDB');
+            
+            // Update subject
+            this.userProfileSubject.next(profile);
+          } catch (parseError) {
+            console.error('👤 UserService: Error parsing profile from localStorage:', parseError);
+          }
+        } else {
+          console.log('👤 UserService: No profile found in any storage');
+        }
       }
     } catch (error) {
       console.error('👤 UserService: Error loading user profile:', error);
@@ -46,7 +71,24 @@ export class UserService {
    * @returns Promise resolving to the user profile or null if not set
    */
   async getUserProfile(): Promise<UserProfile | null> {
-    return this.userProfileSubject.value;
+    // If we already have a profile in memory, return it
+    if (this.userProfileSubject.value) {
+      return this.userProfileSubject.value;
+    }
+    
+    // Otherwise, try to load it from IndexedDB
+    try {
+      const profile = await this.storageService.getUserProfile();
+      if (profile) {
+        // Update the subject with the profile from storage
+        this.userProfileSubject.next(profile);
+        return profile;
+      }
+    } catch (error) {
+      console.error('👤 UserService: Error getting user profile from storage:', error);
+    }
+    
+    return null;
   }
   
   /**
@@ -56,6 +98,7 @@ export class UserService {
    */
   async saveUserProfile(profile: Partial<UserProfile>): Promise<UserProfile> {
     try {
+      console.log('👤 UserService: Saving user profile:', profile);
       const currentProfile = this.userProfileSubject.value;
       
       // Create new profile or update existing one
@@ -65,15 +108,26 @@ export class UserService {
         updatedAt: new Date().toISOString()
       });
       
-      // Save to localStorage
-      localStorage.setItem(this.STORAGE_KEY, JSON.stringify(updatedProfile));
+      // Save to IndexedDB (primary storage)
+      await this.storageService.saveUserProfile(updatedProfile);
+      console.log('👤 UserService: Profile saved to IndexedDB');
+      
+      // Also save to localStorage for backward compatibility
+      try {
+        localStorage.setItem('fitlog-user-profile', JSON.stringify(updatedProfile));
+        console.log('👤 UserService: Profile also saved to localStorage');
+      } catch (localStorageError) {
+        console.warn('👤 UserService: Could not save to localStorage:', localStorageError);
+        // This is non-critical, so we don't throw
+      }
       
       // Update subject
       this.userProfileSubject.next(updatedProfile);
+      console.log('👤 UserService: Profile subject updated');
       
       return updatedProfile;
     } catch (error) {
-      console.error('Error saving user profile:', error);
+      console.error('👤 UserService: Error saving user profile:', error);
       throw new Error('Failed to save user profile');
     }
   }
@@ -129,7 +183,22 @@ export class UserService {
    * Clear user profile data (for testing or reset)
    */
   async clearUserProfile(): Promise<void> {
-    localStorage.removeItem(this.STORAGE_KEY);
+    console.log('👤 UserService: Clearing user profile...');
+    
+    // Clear from IndexedDB
+    await this.storageService.clearUserProfile();
+    console.log('👤 UserService: Profile cleared from IndexedDB');
+    
+    // Clear from localStorage
+    try {
+      localStorage.removeItem('fitlog-user-profile');
+      console.log('👤 UserService: Profile cleared from localStorage');
+    } catch (localStorageError) {
+      console.warn('👤 UserService: Could not clear from localStorage:', localStorageError);
+    }
+    
+    // Update subject
     this.userProfileSubject.next(null);
+    console.log('👤 UserService: Profile subject reset');
   }
 }

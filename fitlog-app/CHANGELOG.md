@@ -9,14 +9,17 @@ All notable changes to this project will be documented in this file.
   - Name input with validation
   - Avatar image upload and preview
   - Modal-based profile editor
+- **IndexedDB Integration**: Enhanced user profile storage with IndexedDB
 - **Responsive Design**: Fully responsive profile UI that adapts to all screen sizes
 - **Theme Integration**: Profile UI respects the app's theme settings
+- **Version Display**: Added version number to footer
 
 ### Technical
 - **Reactive Forms**: Implemented Angular reactive forms with validation
 - **File Handling**: Added image file upload and base64 encoding
-- **Data Persistence**: User profile data stored in localStorage
+- **Data Persistence**: Integrated with IndexedDB for profile data storage
 - **Component Architecture**: Created standalone user profile component
+- **Circular Dependency Resolution**: Fixed circular dependencies between services
 
 ---
 

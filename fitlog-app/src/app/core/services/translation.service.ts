@@ -132,7 +132,12 @@ export class TranslationService {
           chooseImage: 'Choose Image',
           imageHint: 'JPG, PNG or GIF (max 5MB)',
           saveSuccess: 'Profile saved successfully',
-          saveError: 'Error saving profile'
+          saveError: 'Error saving profile',
+          validation: {
+            nameRequired: 'Name is required',
+            nameMinLength: 'Name must be at least 2 characters',
+            nameMaxLength: 'Name cannot exceed 50 characters'
+          }
         },
         common: {
           save: 'Save',
@@ -147,6 +152,27 @@ export class TranslationService {
         trends: { title: 'स्वास्थ्य रुझान', subtitle: 'अपनी प्रगति को ट्रैक करें और समय के साथ अपनी फिटनेस यात्रा को देखें।', weightTrend: 'वजन रुझान', bmiTrend: 'बीएमआई रुझान', noData: 'चयनित समय सीमा के लिए कोई डेटा उपलब्ध नहीं।', addEntries: 'अपना रुझान देखने के लिए कुछ वजन एंट्री जोड़ें!' },
         stats: { average: 'औसत', current: 'वर्तमान', gained: 'बढ़ा', lost: 'घटा', increased: 'बढ़ा', decreased: 'घटा', idealRange: 'आदर्श सीमा', status: 'स्थिति', averageBmi: 'औसत बीएमआई', currentBmi: 'वर्तमान बीएमआई' },
         bmi: { underweight: 'कम वजन', normal: 'सामान्य', overweight: 'अधिक वजन', obese: 'मोटापा' },
+        profile: {
+          title: 'उपयोगकर्ता प्रोफ़ाइल',
+          guest: 'अतिथि',
+          name: 'नाम',
+          namePlaceholder: 'अपना नाम दर्ज करें',
+          chooseImage: 'छवि चुनें',
+          imageHint: 'JPG, PNG या GIF (अधिकतम 5MB)',
+          saveSuccess: 'प्रोफ़ाइल सफलतापूर्वक सहेजा गया',
+          saveError: 'प्रोफ़ाइल सहेजने में त्रुटि',
+          validation: {
+            nameRequired: 'नाम आवश्यक है',
+            nameMinLength: 'नाम कम से कम 2 अक्षर होना चाहिए',
+            nameMaxLength: 'नाम 50 अक्षरों से अधिक नहीं हो सकता'
+          }
+        },
+        common: {
+          save: 'सहेजें',
+          cancel: 'रद्द करें',
+          edit: 'संपादित करें',
+          delete: 'हटाएं'
+        },
         form: { 
           date: 'तारीख', 
           weight: 'वजन', 
@@ -183,6 +209,27 @@ export class TranslationService {
         trends: { title: 'ಆರೋಗ್ಯ ಪ್ರವೃತ್ತಿಗಳು', subtitle: 'ನಿಮ್ಮ ಪ್ರಗತಿಯನ್ನು ಟ್ರ್ಯಾಕ್ ಮಾಡಿ ಮತ್ತು ಕಾಲಾನಂತರದಲ್ಲಿ ನಿಮ್ಮ ಫಿಟ್ನೆಸ್ ಪ್ರಯಾಣವನ್ನು ದೃಶ್ಯೀಕರಿಸಿ।', weightTrend: 'ತೂಕ ಪ್ರವೃತ್ತಿ', bmiTrend: 'BMI ಪ್ರವೃತ್ತಿ', noData: 'ಆಯ್ಕೆಮಾಡಿದ ಸಮಯ ವ್ಯಾಪ್ತಿಗೆ ಯಾವುದೇ ಡೇಟಾ ಲಭ್ಯವಿಲ್ಲ।', addEntries: 'ನಿಮ್ಮ ಪ್ರವೃತ್ತಿಯನ್ನು ನೋಡಲು ಕೆಲವು ತೂಕ ಎಂಟ್ರಿಗಳನ್ನು ಸೇರಿಸಿ!' },
         stats: { average: 'ಸರಾಸರಿ', current: 'ಪ್ರಸ್ತುತ', gained: 'ಹೆಚ್ಚಾಗಿದೆ', lost: 'ಕಳೆದುಕೊಂಡಿದೆ', increased: 'ಹೆಚ್ಚಾಗಿದೆ', decreased: 'ಕಡಿಮೆಯಾಗಿದೆ', idealRange: 'ಆದರ್ಶ ವ್ಯಾಪ್ತಿ', status: 'ಸ್ಥಿತಿ', averageBmi: 'ಸರಾಸರಿ BMI', currentBmi: 'ಪ್ರಸ್ತುತ BMI' },
         bmi: { underweight: 'ಕಡಿಮೆ ತೂಕ', normal: 'ಸಾಮಾನ್ಯ', overweight: 'ಅಧಿಕ ತೂಕ', obese: 'ಸ್ಥೂಲಕಾಯತೆ' },
+        profile: {
+          title: 'ಬಳಕೆದಾರ ಪ್ರೊಫೈಲ್',
+          guest: 'ಅತಿಥಿ',
+          name: 'ಹೆಸರು',
+          namePlaceholder: 'ನಿಮ್ಮ ಹೆಸರನ್ನು ನಮೂದಿಸಿ',
+          chooseImage: 'ಚಿತ್ರವನ್ನು ಆಯ್ಕೆಮಾಡಿ',
+          imageHint: 'JPG, PNG ಅಥವಾ GIF (ಗರಿಷ್ಠ 5MB)',
+          saveSuccess: 'ಪ್ರೊಫೈಲ್ ಯಶಸ್ವಿಯಾಗಿ ಉಳಿಸಲಾಗಿದೆ',
+          saveError: 'ಪ್ರೊಫೈಲ್ ಉಳಿಸುವಲ್ಲಿ ದೋಷ',
+          validation: {
+            nameRequired: 'ಹೆಸರು ಅಗತ್ಯವಿದೆ',
+            nameMinLength: 'ಹೆಸರು ಕನಿಷ್ಠ 2 ಅಕ್ಷರಗಳನ್ನು ಹೊಂದಿರಬೇಕು',
+            nameMaxLength: 'ಹೆಸರು 50 ಅಕ್ಷರಗಳನ್ನು ಮೀರಬಾರದು'
+          }
+        },
+        common: {
+          save: 'ಉಳಿಸಿ',
+          cancel: 'ರದ್ದುಮಾಡಿ',
+          edit: 'ಸಂಪಾದಿಸಿ',
+          delete: 'ಅಳಿಸಿ'
+        },
         form: { 
           date: 'ದಿನಾಂಕ', 
           weight: 'ತೂಕ', 
@@ -218,6 +265,27 @@ export class TranslationService {
         trends: { title: 'உடல்நலப் போக்குகள்', subtitle: 'உங்கள் முன்னேற்றத்தைக் கண்காணித்து, காலப்போக்கில் உங்கள் உடற்பயிற்சி பயணத்தைக் காட்சிப்படுத்துங்கள்।', weightTrend: 'எடை போக்கு', bmiTrend: 'BMI போக்கு', noData: 'தேர்ந்தெடுக்கப்பட்ட நேர வரம்பிற்கு தரவு இல்லை।', addEntries: 'உங்கள் போக்கைப் பார்க்க சில எடை பதிவுகளைச் சேர்க்கவும்!' },
         stats: { average: 'சராசரி', current: 'தற்போதைய', gained: 'அதிகரித்தது', lost: 'இழந்தது', increased: 'அதிகரித்தது', decreased: 'குறைந்தது', idealRange: 'சிறந்த வரம்பு', status: 'நிலை', averageBmi: 'சராசரி BMI', currentBmi: 'தற்போதைய BMI' },
         bmi: { underweight: 'குறைந்த எடை', normal: 'சாதாரண', overweight: 'அதிக எடை', obese: 'உடல்பருமன்' },
+        profile: {
+          title: 'பயனர் சுயவிவரம்',
+          guest: 'விருந்தினர்',
+          name: 'பெயர்',
+          namePlaceholder: 'உங்கள் பெயரை உள்ளிடவும்',
+          chooseImage: 'படத்தைத் தேர்ந்தெடுக்கவும்',
+          imageHint: 'JPG, PNG அல்லது GIF (அதிகபட்சம் 5MB)',
+          saveSuccess: 'சுயவிவரம் வெற்றிகரமாக சேமிக்கப்பட்டது',
+          saveError: 'சுயவிவரத்தைச் சேமிப்பதில் பிழை',
+          validation: {
+            nameRequired: 'பெயர் தேவை',
+            nameMinLength: 'பெயரில் குறைந்தபட்சம் 2 எழுத்துக்கள் இருக்க வேண்டும்',
+            nameMaxLength: 'பெயர் 50 எழுத்துக்களுக்கு மேல் இருக்கக் கூடாது'
+          }
+        },
+        common: {
+          save: 'சேமிக்கவும்',
+          cancel: 'ரத்து செய்யவும்',
+          edit: 'திருத்தவும்',
+          delete: 'நீக்கவும்'
+        },
         form: { 
           date: 'தேதி', 
           weight: 'எடை', 
@@ -253,6 +321,27 @@ export class TranslationService {
         trends: { title: 'ఆరోగ్య ట్రెండ్స్', subtitle: 'మీ పురోగతిని ట్రాక్ చేయండి మరియు కాలక్రమేణా మీ ఫిట్నెస్ ప్రయాణాన్ని దృశ్యమానం చేయండి।', weightTrend: 'బరువు ట్రెండ్', bmiTrend: 'BMI ట్రెండ్', noData: 'ఎంచుకున్న సమయ పరిధికి డేటా అందుబాటులో లేదు।', addEntries: 'మీ ట్రెండ్ను చూడటానికి కొన్ని బరువు ఎంట్రీలను జోడించండి!' },
         stats: { average: 'సగటు', current: 'ప్రస్తుత', gained: 'పెరిగింది', lost: 'కోల్పోయింది', increased: 'పెరిగింది', decreased: 'తగ్గింది', idealRange: 'ఆదర్శ పరిధి', status: 'స్థితి', averageBmi: 'సగటు BMI', currentBmi: 'ప్రస్తుత BMI' },
         bmi: { underweight: 'తక్కువ బరువు', normal: 'సాధారణ', overweight: 'అధిక బరువు', obese: 'స్థూలకాయం' },
+        profile: {
+          title: 'వినియోగదారుల ప్రొఫైల్',
+          guest: 'అతిథి',
+          name: 'పేరు',
+          namePlaceholder: 'మీ పేరుని నమోదు చేయండి',
+          chooseImage: 'చిత్రాన్ని ఎంచుకోండి',
+          imageHint: 'JPG, PNG లేదా GIF (గరిష్ఠంగా 5MB)',
+          saveSuccess: 'ప్రొఫైల్ విజయవంతంగా సేవ్ చేయబడింది',
+          saveError: 'ప్రొఫైల్‌ని సేవ్ చేయడంలో లోపం',
+          validation: {
+            nameRequired: 'పేరు అవసరం',
+            nameMinLength: 'పేరు కనీసం 2 అక్షరాలు ఉండాలి',
+            nameMaxLength: 'పేరు 50 అక్షరాలకు మించరాదు'
+          }
+        },
+        common: {
+          save: 'సేవ్ చేయండి',
+          cancel: 'రద్దు చేయండి',
+          edit: 'సవరించండి',
+          delete: 'తొలగించండి'
+        },
         form: { 
           date: 'తేదీ', 
           weight: 'బరువు', 
@@ -288,6 +377,27 @@ export class TranslationService {
         trends: { title: 'Tendances Santé', subtitle: 'Suivez vos progrès et visualisez votre parcours fitness au fil du temps.', weightTrend: 'Tendance du Poids', bmiTrend: 'Tendance IMC', noData: 'Aucune donnée disponible pour la plage de temps sélectionnée.', addEntries: 'Ajoutez quelques entrées de poids pour voir votre tendance!' },
         stats: { average: 'Moyenne', current: 'Actuel', gained: 'Gagné', lost: 'Perdu', increased: 'Augmenté', decreased: 'Diminué', idealRange: 'Plage Idéale', status: 'Statut', averageBmi: 'IMC Moyen', currentBmi: 'IMC Actuel' },
         bmi: { underweight: 'Insuffisance pondérale', normal: 'Normal', overweight: 'Surpoids', obese: 'Obèse' },
+        profile: {
+          title: 'Profil Utilisateur',
+          guest: 'Invité',
+          name: 'Nom',
+          namePlaceholder: 'Entrez votre nom',
+          chooseImage: 'Choisir une image',
+          imageHint: 'JPG, PNG ou GIF (max 5Mo)',
+          saveSuccess: 'Profil enregistré avec succès',
+          saveError: 'Erreur lors de l\'enregistrement du profil',
+          validation: {
+            nameRequired: 'Le nom est requis',
+            nameMinLength: 'Le nom doit comporter au moins 2 caractères',
+            nameMaxLength: 'Le nom ne doit pas dépasser 50 caractères'
+          }
+        },
+        common: {
+          save: 'Enregistrer',
+          cancel: 'Annuler',
+          edit: 'Modifier',
+          delete: 'Supprimer'
+        },
         form: { 
           date: 'Date', 
           weight: 'Poids', 
@@ -323,6 +433,27 @@ export class TranslationService {
         trends: { title: 'Gesundheitstrends', subtitle: 'Verfolgen Sie Ihren Fortschritt und visualisieren Sie Ihre Fitness-Reise über die Zeit.', weightTrend: 'Gewichtstrend', bmiTrend: 'BMI-Trend', noData: 'Keine Daten für den ausgewählten Zeitraum verfügbar.', addEntries: 'Fügen Sie einige Gewichtseinträge hinzu, um Ihren Trend zu sehen!' },
         stats: { average: 'Durchschnitt', current: 'Aktuell', gained: 'Zugenommen', lost: 'Verloren', increased: 'Gestiegen', decreased: 'Gesunken', idealRange: 'Idealbereich', status: 'Status', averageBmi: 'Durchschnittlicher BMI', currentBmi: 'Aktueller BMI' },
         bmi: { underweight: 'Untergewicht', normal: 'Normal', overweight: 'Übergewicht', obese: 'Adipös' },
+        profile: {
+          title: 'Benutzerprofil',
+          guest: 'Gast',
+          name: 'Name',
+          namePlaceholder: 'Geben Sie Ihren Namen ein',
+          chooseImage: 'Bild auswählen',
+          imageHint: 'JPG, PNG oder GIF (max. 5MB)',
+          saveSuccess: 'Profil erfolgreich gespeichert',
+          saveError: 'Fehler beim Speichern des Profils',
+          validation: {
+            nameRequired: 'Name ist erforderlich',
+            nameMinLength: 'Name muss mindestens 2 Zeichen lang sein',
+            nameMaxLength: 'Name darf nicht länger als 50 Zeichen sein'
+          }
+        },
+        common: {
+          save: 'Speichern',
+          cancel: 'Abbrechen',
+          edit: 'Bearbeiten',
+          delete: 'Löschen'
+        },
         form: { 
           date: 'Datum', 
           weight: 'Gewicht', 

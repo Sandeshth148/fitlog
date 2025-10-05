@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { openDB, DBSchema, IDBPDatabase } from 'idb';
 import { WeightEntry, WeightEntryUtils } from '../../features/weight-tracker/models/weight-entry.model';
 import { BmiService } from './bmi.service';
-import { UserService } from './user.service';
 import { DateValidationService } from './date-validation.service';
 import { UserProfile } from '../models/user-profile.model';
 
@@ -38,7 +37,6 @@ export class StorageService {
 
   constructor(
     private bmiService: BmiService,
-    private userService: UserService,
     private dateValidationService: DateValidationService
   ) {
     this.dbPromise = this.initDb();
@@ -93,11 +91,18 @@ export class StorageService {
    */
   async getUserProfile(): Promise<UserProfile | undefined> {
     try {
+      console.log('StorageService: Getting user profile from IndexedDB...');
       const db = await this.dbPromise;
       const allProfiles = await db.getAll(USER_STORE);
       
-      // Return the first profile found (there should only be one)
-      return allProfiles.length > 0 ? allProfiles[0] : undefined;
+      console.log(`StorageService: Found ${allProfiles.length} profiles in IndexedDB`);
+      if (allProfiles.length > 0) {
+        console.log('StorageService: Retrieved profile:', allProfiles[0]);
+        return allProfiles[0];
+      } else {
+        console.log('StorageService: No profiles found in IndexedDB');
+        return undefined;
+      }
     } catch (error) {
       console.error('StorageService: Error getting user profile', error);
       return undefined;
@@ -198,15 +203,34 @@ export class StorageService {
   }
   
   /**
+   * Checks if a user profile exists in the database
+   * @returns A promise that resolves to true if a profile exists, false otherwise
+   */
+  async hasUserProfile(): Promise<boolean> {
+    try {
+      const db = await this.dbPromise;
+      const count = await db.count(USER_STORE);
+      console.log(`StorageService: Profile count in IndexedDB: ${count}`);
+      return count > 0;
+    } catch (error) {
+      console.error('StorageService: Error checking for user profile', error);
+      return false;
+    }
+  }
+  
+  /**
    * Adds a weight entry with BMI calculation
    * @param entry Partial weight entry
+   * @param heightCm User's height in centimeters (optional, will be fetched from profile if not provided)
    * @returns Promise resolving to the saved entry
    */
-  async addEntryWithBmi(entry: Partial<WeightEntry>): Promise<WeightEntry> {
+  async addEntryWithBmi(entry: Partial<WeightEntry>, heightCm?: number): Promise<WeightEntry> {
     try {
-      // Get user height
-      const profile = await this.userService.getUserProfile();
-      const heightCm = profile?.heightCm || 0;
+      // Get user height from parameter or fetch from profile
+      if (heightCm === undefined) {
+        const profile = await this.getUserProfile();
+        heightCm = profile?.heightCm || 0;
+      }
       
       // Calculate BMI if height is available
       let bmi: number | undefined;
