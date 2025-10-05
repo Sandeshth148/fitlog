@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TranslatePipe } from '../../pipes/translate.pipe';
+import { APP_VERSION } from '../../constants/version';
 
 @Component({
   selector: 'app-footer',
@@ -14,6 +15,9 @@ import { TranslatePipe } from '../../pipes/translate.pipe';
         </p>
         <p class="tagline">
           {{ 'footer.tagline' | translate }}
+        </p>
+        <p class="version">
+          v{{ appVersion }}
         </p>
       </div>
     </footer>
@@ -40,10 +44,17 @@ import { TranslatePipe } from '../../pipes/translate.pipe';
     }
     
     .tagline {
-      margin: 0;
+      margin: 0 0 0.5rem 0;
       color: var(--color-text-secondary);
       font-size: 0.75rem;
       font-style: italic;
+    }
+    
+    .version {
+      margin: 0;
+      color: var(--color-text-muted);
+      font-size: 0.7rem;
+      font-weight: 500;
     }
     
     @media (max-width: 640px) {
@@ -55,4 +66,5 @@ import { TranslatePipe } from '../../pipes/translate.pipe';
 })
 export class FooterComponent {
   currentYear = new Date().getFullYear();
+  appVersion = APP_VERSION;
 }
