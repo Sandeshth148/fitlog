@@ -4,19 +4,25 @@ import { WeightEntry, WeightEntryUtils } from '../../features/weight-tracker/mod
 import { BmiService } from './bmi.service';
 import { UserService } from './user.service';
 import { DateValidationService } from './date-validation.service';
+import { UserProfile } from '../models/user-profile.model';
 
 const DB_NAME = 'fitlog-db';
-const DB_VERSION = 2; // Increased version for schema updates
-const STORE_NAME = 'weight-entries';
+const DB_VERSION = 3; // Increased version for user profile store
+const WEIGHT_STORE = 'weight-entries';
+const USER_STORE = 'user-profile';
 
 interface FitLogDb extends DBSchema {
-  [STORE_NAME]: {
+  [WEIGHT_STORE]: {
     key: string;
     value: WeightEntry;
     indexes: { 
       'createdAt': string;
       'date': string;
     };
+  };
+  [USER_STORE]: {
+    key: string;
+    value: UserProfile;
   };
 }
 
@@ -43,12 +49,18 @@ export class StorageService {
       upgrade(db, oldVersion, newVersion) {
         console.log(`Upgrading IndexedDB from version ${oldVersion} to ${newVersion}`);
         
-        // Create store if it doesn't exist
-        if (!db.objectStoreNames.contains(STORE_NAME)) {
-          console.log('Creating object store:', STORE_NAME);
-          const store = db.createObjectStore(STORE_NAME, { keyPath: 'id' });
+        // Create weight entries store if it doesn't exist
+        if (!db.objectStoreNames.contains(WEIGHT_STORE)) {
+          console.log('Creating object store:', WEIGHT_STORE);
+          const store = db.createObjectStore(WEIGHT_STORE, { keyPath: 'id' });
           store.createIndex('createdAt', 'createdAt');
           store.createIndex('date', 'date');
+        }
+        
+        // Create user profile store if it doesn't exist
+        if (!db.objectStoreNames.contains(USER_STORE)) {
+          console.log('Creating object store:', USER_STORE);
+          db.createObjectStore(USER_STORE, { keyPath: 'id' });
         }
         
         console.log('Database upgrade complete');
@@ -56,6 +68,42 @@ export class StorageService {
     });
   }
 
+  /**
+   * Saves or updates a user profile in the database
+   * @param profile The UserProfile to save
+   * @returns A promise that resolves with the saved profile's id
+   */
+  async saveUserProfile(profile: UserProfile): Promise<string> {
+    try {
+      console.log('StorageService: Saving user profile', JSON.stringify(profile));
+      
+      const db = await this.dbPromise;
+      const result = await db.put(USER_STORE, profile);
+      console.log('StorageService: User profile saved successfully', result);
+      return result;
+    } catch (error) {
+      console.error('StorageService: Error saving user profile', error);
+      throw error;
+    }
+  }
+  
+  /**
+   * Retrieves the user profile from the database
+   * @returns A promise that resolves with the UserProfile or undefined if not found
+   */
+  async getUserProfile(): Promise<UserProfile | undefined> {
+    try {
+      const db = await this.dbPromise;
+      const allProfiles = await db.getAll(USER_STORE);
+      
+      // Return the first profile found (there should only be one)
+      return allProfiles.length > 0 ? allProfiles[0] : undefined;
+    } catch (error) {
+      console.error('StorageService: Error getting user profile', error);
+      return undefined;
+    }
+  }
+  
   /**
    * Adds or updates a weight entry in the database.
    * @param entry The WeightEntry to save.
@@ -84,7 +132,7 @@ export class StorageService {
       };
       
       const db = await this.dbPromise;
-      const result = await db.put(STORE_NAME, updatedEntry);
+      const result = await db.put(WEIGHT_STORE, updatedEntry);
       console.log('StorageService: Entry saved successfully', result);
       return result;
     } catch (error) {
@@ -102,7 +150,7 @@ export class StorageService {
     try {
       console.log('StorageService: Getting all entries');
       const db = await this.dbPromise;
-      const entries = await db.getAll(STORE_NAME);
+      const entries = await db.getAll(WEIGHT_STORE);
       console.log(`StorageService: Retrieved ${entries.length} entries`);
       return entries;
     } catch (error) {
@@ -118,7 +166,7 @@ export class StorageService {
    */
   async getEntryById(id: string): Promise<WeightEntry | undefined> {
     const db = await this.dbPromise;
-    return db.get(STORE_NAME, id);
+    return db.get(WEIGHT_STORE, id);
   }
 
   /**
@@ -128,7 +176,7 @@ export class StorageService {
    */
   async deleteEntry(id: string): Promise<void> {
     const db = await this.dbPromise;
-    return db.delete(STORE_NAME, id);
+    return db.delete(WEIGHT_STORE, id);
   }
 
   /**
@@ -137,7 +185,16 @@ export class StorageService {
    */
   async clearAll(): Promise<void> {
     const db = await this.dbPromise;
-    return db.clear(STORE_NAME);
+    return db.clear(WEIGHT_STORE);
+  }
+  
+  /**
+   * Clears the user profile from the database
+   * @returns A promise that resolves when the profile is cleared
+   */
+  async clearUserProfile(): Promise<void> {
+    const db = await this.dbPromise;
+    return db.clear(USER_STORE);
   }
   
   /**

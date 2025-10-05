@@ -1,6 +1,6 @@
 {
   "name": "fitlog-app",
-  "version": "1.6.2",
+  "version": "1.7.0",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
@@ -25,6 +25,7 @@
     "date-fns": "^4.1.0",
     "idb": "^8.0.3",
     "ng2-charts": "^8.0.0",
+    "ngx-indexed-db": "^21.0.0",
     "rxjs": "~7.8.1",
     "tslib": "^2.6.2",
     "zone.js": "^0.15.1"

@@ -2,6 +2,24 @@
 
 All notable changes to this project will be documented in this file.
 
+## [v1.7.0] - 2025-10-05
+
+### Added
+- **User Profile Component**: Added user profile functionality in the navigation bar
+  - Name input with validation
+  - Avatar image upload and preview
+  - Modal-based profile editor
+- **Responsive Design**: Fully responsive profile UI that adapts to all screen sizes
+- **Theme Integration**: Profile UI respects the app's theme settings
+
+### Technical
+- **Reactive Forms**: Implemented Angular reactive forms with validation
+- **File Handling**: Added image file upload and base64 encoding
+- **Data Persistence**: User profile data stored in localStorage
+- **Component Architecture**: Created standalone user profile component
+
+---
+
 ## [v1.6.2] - 2025-10-05
 
 ### Fixed

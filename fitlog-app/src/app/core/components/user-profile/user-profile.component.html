@@ -1,0 +1,101 @@
+<div class="user-profile">
+  <!-- Profile Button -->
+  <button 
+    class="profile-button" 
+    (click)="openModal()" 
+    [attr.aria-label]="'Open user profile'">
+    
+    @if (userProfile() && userProfile()?.avatar) {
+      <div class="avatar-container">
+        <img [src]="userProfile()?.avatar" alt="User avatar" class="user-avatar" />
+      </div>
+    } @else {
+      <div class="avatar-placeholder">
+        <span class="avatar-icon">👤</span>
+      </div>
+    }
+    
+    @if (userProfile() && userProfile()?.name) {
+      <span class="user-name">{{ userProfile()?.name }}</span>
+    } @else {
+      <span class="user-name">{{ 'profile.guest' | translate }}</span>
+    }
+  </button>
+  
+  <!-- Profile Modal -->
+  @if (isModalOpen()) {
+    <div class="modal-overlay" (click)="closeModal()">
+      <div class="modal-container" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+          <h2>{{ 'profile.title' | translate }}</h2>
+          <button class="close-button" (click)="closeModal()" aria-label="Close">×</button>
+        </div>
+        
+        <div class="modal-body">
+          <form [formGroup]="profileForm" (ngSubmit)="onSubmit()">
+            <!-- Avatar Upload -->
+            <div class="avatar-upload">
+              <div class="avatar-preview">
+                @if (avatarPreview()) {
+                  <img [src]="avatarPreview()" alt="Avatar preview" />
+                } @else {
+                  <div class="avatar-placeholder large">
+                    <span class="avatar-icon">👤</span>
+                  </div>
+                }
+              </div>
+              
+              <div class="avatar-controls">
+                <label class="file-input-label">
+                  <span>{{ 'profile.chooseImage' | translate }}</span>
+                  <input 
+                    type="file" 
+                    accept="image/*" 
+                    (change)="onFileSelected($event)" 
+                    class="file-input" />
+                </label>
+                <p class="file-hint">{{ 'profile.imageHint' | translate }}</p>
+              </div>
+            </div>
+            
+            <!-- Name Input -->
+            <div class="form-group">
+              <label for="name">{{ 'profile.name' | translate }}</label>
+              <input 
+                type="text" 
+                id="name" 
+                formControlName="name" 
+                [placeholder]="'profile.namePlaceholder' | translate" 
+                class="form-input"
+                [class.error]="hasNameError" />
+              
+              @if (hasNameError) {
+                <div class="error-message">{{ nameErrorMessage }}</div>
+              }
+            </div>
+            
+            <!-- Form Actions -->
+            <div class="form-actions">
+              <button 
+                type="button" 
+                class="btn btn-secondary" 
+                (click)="closeModal()">
+                {{ 'common.cancel' | translate }}
+              </button>
+              
+              <button 
+                type="submit" 
+                class="btn btn-primary" 
+                [disabled]="profileForm.invalid || isSubmitting()">
+                @if (isSubmitting()) {
+                  <span class="spinner"></span>
+                }
+                {{ 'common.save' | translate }}
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  }
+</div>

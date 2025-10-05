@@ -123,7 +123,23 @@ export class TranslationService {
         },
         setup: { title: 'Welcome to FitLog', intro: 'Let\'s set up your profile to get started tracking your weight and health metrics.' },
         footer: { copyright: '© {{year}} FitLog. All rights reserved.', tagline: 'Track your fitness journey, one entry at a time.' },
-        pwa: { installTitle: 'Install FitLog', installSubtitle: 'Get the full app experience', installButton: 'Install App' }
+        pwa: { installTitle: 'Install FitLog', installSubtitle: 'Get the full app experience', installButton: 'Install App' },
+        profile: {
+          title: 'User Profile',
+          guest: 'Guest',
+          name: 'Name',
+          namePlaceholder: 'Enter your name',
+          chooseImage: 'Choose Image',
+          imageHint: 'JPG, PNG or GIF (max 5MB)',
+          saveSuccess: 'Profile saved successfully',
+          saveError: 'Error saving profile'
+        },
+        common: {
+          save: 'Save',
+          cancel: 'Cancel',
+          edit: 'Edit',
+          delete: 'Delete'
+        }
       },
       hi: {
         nav: { home: 'होम', trends: 'रुझान' },

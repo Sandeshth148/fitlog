@@ -4,11 +4,12 @@ import { RouterModule } from '@angular/router';
 import { LanguageSwitcherComponent } from '../language-switcher/language-switcher.component';
 import { ThemeSelectorComponent } from '../theme-selector/theme-selector.component';
 import { TranslatePipe } from '../../pipes/translate.pipe';
+import { UserProfileComponent } from '../user-profile/user-profile.component';
 
 @Component({
   selector: 'app-nav',
   standalone: true,
-  imports: [CommonModule, RouterModule, LanguageSwitcherComponent, ThemeSelectorComponent, TranslatePipe],
+  imports: [CommonModule, RouterModule, LanguageSwitcherComponent, ThemeSelectorComponent, TranslatePipe, UserProfileComponent],
   template: `
     <nav class="app-nav">
       <div class="app-nav-container">
@@ -31,6 +32,7 @@ import { TranslatePipe } from '../../pipes/translate.pipe';
           <div class="nav-controls">
             <app-theme-selector></app-theme-selector>
             <app-language-switcher></app-language-switcher>
+            <app-user-profile></app-user-profile>
           </div>
         </div>
         

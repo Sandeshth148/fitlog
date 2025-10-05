@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { UserProfile, UserProfileUtils } from '../models/user-profile.model';
 import { BehaviorSubject, Observable } from 'rxjs';
+import { StorageService } from './storage.service';
 
 /**
  * Service for managing user profile data
@@ -104,6 +105,24 @@ export class UserService {
     const isComplete = !!profile && profile.heightCm > 0;
     console.log('👤 UserService: Profile complete?', isComplete);
     return isComplete;
+  }
+  
+  /**
+   * Update user name
+   * @param name User's display name
+   * @returns Promise resolving to the updated profile
+   */
+  async updateUserName(name: string): Promise<UserProfile> {
+    return this.saveUserProfile({ name });
+  }
+  
+  /**
+   * Update user avatar
+   * @param avatar Base64 encoded avatar image
+   * @returns Promise resolving to the updated profile
+   */
+  async updateUserAvatar(avatar: string): Promise<UserProfile> {
+    return this.saveUserProfile({ avatar });
   }
   
   /**
