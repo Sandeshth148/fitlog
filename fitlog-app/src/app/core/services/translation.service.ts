@@ -15,7 +15,8 @@ export interface Language {
   providedIn: 'root'
 })
 export class TranslationService {
-  private currentLanguage$ = new BehaviorSubject<string>('en');
+  // Make this public so components can subscribe to language changes directly
+  public currentLanguage$ = new BehaviorSubject<string>('en');
   private translations: { [key: string]: Translation } = {};
 
   readonly supportedLanguages: Language[] = [
@@ -103,6 +104,7 @@ export class TranslationService {
           cancel: 'Cancel', 
           edit: 'Edit', 
           delete: 'Delete',
+          at: 'at',
           enterHeight: 'Enter Your Height',
           updateHeight: 'Update Your Height',
           heightDescription: 'We\'ll use this to calculate your BMI and ideal weight range.',
@@ -138,6 +140,7 @@ export class TranslationService {
           cancel: 'रद्द करें', 
           edit: 'संपादित करें', 
           delete: 'हटाएं',
+          at: 'पर',
           enterHeight: 'अपनी ऊंचाई दर्ज करें',
           updateHeight: 'अपनी ऊंचाई अपडेट करें',
           heightDescription: 'हम आपके BMI और आदर्श वजन सीमा की गणना के लिए इसका उपयोग करेंगे।',
@@ -173,6 +176,7 @@ export class TranslationService {
           cancel: 'ರದ್ದುಮಾಡಿ', 
           edit: 'ಸಂಪಾದಿಸಿ', 
           delete: 'ಅಳಿಸಿ',
+          at: 'ನಲ್ಲಿ',
           enterHeight: 'ನಿಮ್ಮ ಎತ್ತರವನ್ನು ನಮೂದಿಸಿ',
           updateHeight: 'ನಿಮ್ಮ ಎತ್ತರವನ್ನು ನವೀಕರಿಸಿ',
           heightDescription: 'ನಿಮ್ಮ BMI ಮತ್ತು ಆದರ್ಶ ತೂಕದ ವ್ಯಾಪ್ತಿಯನ್ನು ಲೆಕ್ಕಹಾಕಲು ನಾವು ಇದನ್ನು ಬಳಸುತ್ತೇವೆ.',
@@ -207,6 +211,7 @@ export class TranslationService {
           cancel: 'ரத்து செய்யவும்', 
           edit: 'திருத்தவும்', 
           delete: 'நீக்கவும்',
+          at: 'அளவில்',
           enterHeight: 'உங்கள் உயரத்தை உள்ளிடவும்',
           updateHeight: 'உங்கள் உயரத்தை புதுப்பிக்கவும்',
           heightDescription: 'உங்கள் BMI மற்றும் சிறந்த எடை வரம்பைக் கணக்கிட இதைப் பயன்படுத்துவோம்.',
@@ -241,6 +246,7 @@ export class TranslationService {
           cancel: 'రద్దు చేయండి', 
           edit: 'సవరించండి', 
           delete: 'తొలగించండి',
+          at: 'వద్ద',
           enterHeight: 'మీ ఎత్తును నమోదు చేయండి',
           updateHeight: 'మీ ఎత్తును నవీకరించండి',
           heightDescription: 'మేము మీ BMI మరియు ఆదర్శ బరువు శ్రేణిని లెక్కించడానికి దీన్ని ఉపయోగిస్తాము.',
@@ -275,6 +281,7 @@ export class TranslationService {
           cancel: 'Annuler', 
           edit: 'Modifier', 
           delete: 'Supprimer',
+          at: 'à',
           enterHeight: 'Entrez votre taille',
           updateHeight: 'Mettez à jour votre taille',
           heightDescription: 'Nous utiliserons cette information pour calculer votre IMC et votre plage de poids idéale.',
@@ -309,6 +316,7 @@ export class TranslationService {
           cancel: 'Abbrechen', 
           edit: 'Bearbeiten', 
           delete: 'Löschen',
+          at: 'bei',
           enterHeight: 'Geben Sie Ihre Größe ein',
           updateHeight: 'Aktualisieren Sie Ihre Größe',
           heightDescription: 'Wir verwenden diese Angabe, um Ihren BMI und Ihren idealen Gewichtsbereich zu berechnen.',

@@ -1,11 +1,12 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { BmiService, BmiCategory } from '../../../../core/services/bmi.service';
+import { TranslatePipe } from '../../../../core/pipes/translate.pipe';
 
 @Component({
   selector: 'app-bmi-display',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, TranslatePipe],
   template: `
     <div class="bmi-display" [ngClass]="getBmiColorClass()">
       <div class="bmi-header">
@@ -25,12 +26,12 @@ import { BmiService, BmiCategory } from '../../../../core/services/bmi.service';
         </div> -->
       </div>
       
-      <div class="bmi-category">{{ getBmiCategory() }}</div>
+      <div class="bmi-category">{{ 'bmi.' + getBmiCategoryKey() | translate }}</div>
       
       <div class="ideal-weight" *ngIf="showIdealWeight && heightCm > 0">
         <div class="ideal-weight-header">
-          <span class="label">Ideal Weight Range</span>
-          <span class="height-value">at {{ heightCm.toFixed(0) }} cm</span>
+          <span class="label">{{ 'stats.idealRange' | translate }}</span>
+          <span class="height-value">{{ 'form.at' | translate }} {{ heightCm.toFixed(0) }} cm</span>
         </div>
         <span class="value">{{ idealWeightMin.toFixed(1) }} - {{ idealWeightMax.toFixed(1) }} kg</span>
       </div>
@@ -234,6 +235,11 @@ export class BmiDisplayComponent implements OnInit {
   
   getBmiCategory(): string {
     return this.bmiService.getBmiCategory(this.bmi);
+  }
+  
+  getBmiCategoryKey(): string {
+    const category = this.bmiService.getBmiCategory(this.bmi).toLowerCase();
+    return category.replace(' ', '');
   }
   
   getBmiColorClass(): string {

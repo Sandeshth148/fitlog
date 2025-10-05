@@ -2,6 +2,34 @@
 
 All notable changes to this project will be documented in this file.
 
+## [v1.6.2] - 2025-10-05
+
+### Fixed
+- **Language Reactivity**: Fixed components not updating immediately when language changes due to OnPush change detection strategy
+- **Entry List Component**: Added subscription to language changes and proper change detection triggering
+- **Height Input Component**: Fixed async operations with proper error handling and added language change reactivity
+- **No-entries Placeholder**: Ensured placeholder text updates with language changes in real-time
+- **Translation Service**: Made currentLanguage$ observable public to allow direct component subscriptions
+
+### Technical
+- **Change Detection**: Implemented proper change detection for OnPush components
+- **Subscription Management**: Added proper subscription cleanup in ngOnDestroy lifecycle hooks
+- **Async Operations**: Fixed promise handling in components that interact with user profile data
+- **Observable Pattern**: Improved reactive programming pattern with direct observable subscriptions
+
+---
+
+## [v1.6.1] - 2025-10-05
+
+### Fixed
+- **Translation System**: Fixed mixed language issues in UI components
+- **BMI Display**: Added missing translations for BMI categories
+- **Button Component**: Added translation support for accessibility attributes
+- **Height Component**: Fixed missing translations for height-related UI
+- **Consistency**: Ensured consistent language across all pages and components
+
+---
+
 ## [v1.6.0] - 2025-10-05
 
 ### Added

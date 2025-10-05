@@ -22,7 +22,12 @@ import { TranslatePipe } from '../../../../core/pipes/translate.pipe';
         <p>{{ 'home.subtitle' | translate }}</p>
         
         @if (!isEntryFormVisible()) {
-          <app-button (clicked)="showEntryForm()" ariaLabel="Add new weight entry" size="lg" class="fab">
+          <app-button 
+            (clicked)="showEntryForm()" 
+            [ariaLabel]="'home.addEntry' | translate" 
+            size="lg" 
+            class="fab"
+          >
             {{ 'home.addEntry' | translate }}
           </app-button>
         }

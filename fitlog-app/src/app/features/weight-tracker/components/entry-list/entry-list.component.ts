@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, ChangeDetectionStrategy, OnInit } from '@angular/core';
+import { Component, Input, Output, EventEmitter, ChangeDetectionStrategy, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { WeightEntry } from '../../models/weight-entry.model';
 import { ButtonComponent } from '../../../../shared/components/button/button.component';
@@ -6,6 +6,8 @@ import { BmiDisplayComponent } from '../bmi-display/bmi-display.component';
 import { UserService } from '../../../../core/services/user.service';
 import { BmiService } from '../../../../core/services/bmi.service';
 import { TranslatePipe } from '../../../../core/pipes/translate.pipe';
+import { TranslationService } from '../../../../core/services/translation.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-entry-list',
@@ -65,7 +67,7 @@ import { TranslatePipe } from '../../../../core/pipes/translate.pipe';
   styleUrls: ['./entry-list.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class EntryListComponent implements OnInit {
+export class EntryListComponent implements OnInit, OnDestroy {
   @Input() entries: WeightEntry[] = [];
   @Output() entryEdited = new EventEmitter<WeightEntry>();
   @Output() entryDeleted = new EventEmitter<string>();
@@ -73,10 +75,13 @@ export class EntryListComponent implements OnInit {
   userHeight: number = 0;
   hasHeight: boolean = false;
   showBmi: boolean = true; // Can be made configurable later
+  private langSubscription: Subscription = new Subscription();
 
   constructor(
     private userService: UserService,
-    private bmiService: BmiService
+    private bmiService: BmiService,
+    private translationService: TranslationService,
+    private cdr: ChangeDetectorRef
   ) {}
   
   async ngOnInit() {
@@ -84,6 +89,19 @@ export class EntryListComponent implements OnInit {
     const profile = await this.userService.getUserProfile();
     this.userHeight = profile?.heightCm || 0;
     this.hasHeight = this.userHeight > 0;
+    
+    // Subscribe to language changes
+    this.langSubscription = this.translationService.currentLanguage$.subscribe(() => {
+      // Trigger change detection when language changes
+      this.cdr.markForCheck();
+    });
+  }
+  
+  ngOnDestroy() {
+    // Clean up subscription
+    if (this.langSubscription) {
+      this.langSubscription.unsubscribe();
+    }
   }
   
   // TrackBy function for ngFor to improve performance

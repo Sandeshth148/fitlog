@@ -1,14 +1,17 @@
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, OnInit, OnDestroy, Output, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { UserService } from '../../../../core/services/user.service';
 import { UserProfileUtils } from '../../../../core/models/user-profile.model';
 import { TranslatePipe } from '../../../../core/pipes/translate.pipe';
+import { TranslationService } from '../../../../core/services/translation.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-height-input',
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule, TranslatePipe],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div class="height-input-container">
       <h2>{{ (isUpdate ? 'form.updateHeight' : 'form.enterHeight') | translate }}</h2>
@@ -257,7 +260,7 @@ import { TranslatePipe } from '../../../../core/pipes/translate.pipe';
     }
   `]
 })
-export class HeightInputComponent implements OnInit {
+export class HeightInputComponent implements OnInit, OnDestroy {
   heightForm: FormGroup;
   selectedUnit: 'cm' | 'ft' = 'cm';
   isUpdate = false;
@@ -265,9 +268,13 @@ export class HeightInputComponent implements OnInit {
   
   @Output() heightSaved = new EventEmitter<number>(); // Height in cm
   
+  private langSubscription: Subscription = new Subscription();
+
   constructor(
     private fb: FormBuilder,
-    private userService: UserService
+    private userService: UserService,
+    private translationService: TranslationService,
+    private cdr: ChangeDetectorRef
   ) {
     this.heightForm = this.fb.group({
       heightCm: ['', [Validators.required, Validators.min(0.1)]],
@@ -277,33 +284,53 @@ export class HeightInputComponent implements OnInit {
   }
   
   async ngOnInit() {
-    // Load user preferences and current height
-    const profile = await this.userService.getUserProfile();
+    this.initForm();
     
-    if (profile) {
-      // Set preferred unit
-      if (profile.preferredUnits?.height) {
-        // Convert 'in' to 'ft' for backward compatibility
-        this.selectedUnit = profile.preferredUnits.height === 'in' ? 'ft' : profile.preferredUnits.height;
-      }
+    // Subscribe to language changes
+    this.langSubscription = this.translationService.currentLanguage$.subscribe(() => {
+      // Trigger change detection when language changes
+      this.cdr.markForCheck();
+    });
+  }
+  
+  ngOnDestroy() {
+    // Clean up subscription
+    if (this.langSubscription) {
+      this.langSubscription.unsubscribe();
+    }
+  }
+  
+  async initForm() {
+    try {
+      const profile = await this.userService.getUserProfile();
       
-      // Check if updating existing height
-      if (profile.heightCm > 0) {
-        this.isUpdate = true;
-        this.heightCm = profile.heightCm;
+      if (profile) {
+        // Set preferred unit
+        if (profile.preferredUnits?.height) {
+          // Convert 'in' to 'ft' for backward compatibility
+          this.selectedUnit = profile.preferredUnits.height === 'in' ? 'ft' : profile.preferredUnits.height;
+        }
         
-        if (this.selectedUnit === 'cm') {
-          this.heightForm.get('heightCm')?.setValue(profile.heightCm);
-        } else {
-          // Convert cm to feet and inches
-          const totalInches = UserProfileUtils.cmToIn(profile.heightCm);
-          const feet = Math.floor(totalInches / 12);
-          const inches = Math.round(totalInches % 12);
+        // Check if updating existing height
+        if (profile.heightCm > 0) {
+          this.isUpdate = true;
+          this.heightCm = profile.heightCm;
           
-          this.heightForm.get('feet')?.setValue(feet);
-          this.heightForm.get('inches')?.setValue(inches);
+          if (this.selectedUnit === 'cm') {
+            this.heightForm.get('heightCm')?.setValue(profile.heightCm);
+          } else {
+            // Convert cm to feet and inches
+            const totalInches = UserProfileUtils.cmToIn(profile.heightCm);
+            const feet = Math.floor(totalInches / 12);
+            const inches = Math.round(totalInches % 12);
+            
+            this.heightForm.get('feet')?.setValue(feet);
+            this.heightForm.get('inches')?.setValue(inches);
+          }
         }
       }
+    } catch (error) {
+      console.error('Error loading user profile:', error);
     }
     
     // Update height preview when form values change

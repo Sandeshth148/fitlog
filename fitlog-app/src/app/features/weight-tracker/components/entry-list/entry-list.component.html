@@ -1,5 +1,5 @@
 <div class="entry-list-container">
-  <h3 *ngIf="entries.length > 0">Recent Entries</h3>
+  <h3 *ngIf="entries.length > 0">{{ 'home.recentEntries' | translate }}</h3>
   <ul class="entry-list" *ngIf="entries.length > 0; else noEntries">
     <li *ngFor="let entry of entries; trackBy: trackById" class="entry-item">
       <div class="entry-details">
@@ -21,16 +21,16 @@
         <span class="entry-notes" *ngIf="entry.notes">{{ entry.notes }}</span>
       </div>
       <div class="entry-actions">
-        <app-button (clicked)="entryEdited.emit(entry)" variant="ghost" size="sm">Edit</app-button>
-        <app-button (clicked)="entryDeleted.emit(entry.id)" variant="ghost" size="sm" class="delete-btn">Delete</app-button>
+        <app-button (clicked)="entryEdited.emit(entry)" variant="ghost" size="sm">{{ 'form.edit' | translate }}</app-button>
+        <app-button (clicked)="entryDeleted.emit(entry.id)" variant="ghost" size="sm" class="delete-btn">{{ 'form.delete' | translate }}</app-button>
       </div>
     </li>
   </ul>
 
   <ng-template #noEntries>
     <div class="no-entries-placeholder">
-      <p>No weight entries yet.</p>
-      <p>Click the "+ Add Entry" button to get started!</p>
+      <p>{{ 'home.noEntries' | translate }}</p>
+      <p>{{ 'home.getStarted' | translate }}</p>
     </div>
   </ng-template>
 </div>
