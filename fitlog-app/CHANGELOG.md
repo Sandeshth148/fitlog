@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file.
 
+## [v1.7.1] - 2025-10-05
+
+### Technical
+- **Component Structure**: Improved component architecture by splitting HTML, CSS, and TypeScript into separate files
+- **Code Organization**: Better organized profile component with proper file structure
+- **Build Optimization**: Fixed build issues and improved compilation performance
+- **Import Management**: Fixed circular dependencies and properly organized imports
+
+---
+
 ## [v1.7.0] - 2025-10-05
 
 ### Added

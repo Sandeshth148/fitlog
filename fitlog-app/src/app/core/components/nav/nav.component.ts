@@ -4,9 +4,9 @@ import { RouterModule } from '@angular/router';
 import { LanguageSwitcherComponent } from '../language-switcher/language-switcher.component';
 import { ThemeSelectorComponent } from '../theme-selector/theme-selector.component';
 import { TranslatePipe } from '../../pipes/translate.pipe';
-import { UserProfileComponent } from '../user-profile/user-profile.component';
 import { UserService } from '../../services/user.service';
 import { UserProfile } from '../../models/user-profile.model';
+import { UserProfileComponent } from '../user-profile/user-profile.component';
 
 @Component({
   selector: 'app-nav',
