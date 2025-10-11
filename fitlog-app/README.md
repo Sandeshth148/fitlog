@@ -114,6 +114,104 @@ npm run deploy
 ```
 Builds and deploys the app to GitHub Pages.
 
+## Build Configuration
+
+### Bundle Size Budgets
+
+The application uses Angular's build budgets to monitor bundle sizes and prevent performance degradation. These budgets are configured in `angular.json`:
+
+```json
+"budgets": [
+  {
+    "type": "initial",
+    "maximumWarning": "500kb",
+    "maximumError": "1.5mb"
+  },
+  {
+    "type": "anyComponentStyle",
+    "maximumWarning": "4kb",
+    "maximumError": "8kb"
+  }
+]
+```
+
+#### Budget Types
+
+1. **Initial Bundle Budget**
+   - **Warning Threshold**: 500 KB
+   - **Error Threshold**: 1.5 MB
+   - **Purpose**: Monitors the initial JavaScript bundle size that users download on first load
+   - **Impact**: Larger bundles increase initial load time, especially on slower networks
+
+2. **Component Style Budget**
+   - **Warning Threshold**: 4 KB per component
+   - **Error Threshold**: 8 KB per component
+   - **Purpose**: Ensures component-specific styles remain manageable
+   - **Impact**: Large component styles can bloat the bundle and slow down rendering
+
+#### Why These Limits?
+
+- **Initial Bundle (1.5 MB)**: Allows for a feature-rich app with:
+  - Angular framework (~200 KB)
+  - Chart.js library (~200 KB)
+  - Application code and components (~400 KB)
+  - Third-party dependencies (~200 KB)
+  - Buffer for future features (~500 KB)
+
+- **Component Styles (8 KB)**: Accommodates complex components with:
+  - Responsive layouts
+  - Multiple states and animations
+  - Mobile-specific styles
+  - Theme variations
+
+#### Monitoring Bundle Size
+
+During production builds, Angular will:
+- **Warn** when approaching the threshold (helps catch issues early)
+- **Error** when exceeding the maximum (prevents deployment of oversized bundles)
+
+To check current bundle sizes:
+```bash
+npm run build
+```
+
+The build output shows the size of each chunk and highlights any budget violations.
+
+#### Optimizing Bundle Size
+
+If you need to reduce bundle size:
+
+1. **Lazy Loading**: Split features into lazy-loaded modules
+   ```typescript
+   {
+     path: 'charts',
+     loadComponent: () => import('./charts/charts.component')
+   }
+   ```
+
+2. **Tree Shaking**: Remove unused code by avoiding wildcard imports
+   ```typescript
+   // ❌ Bad
+   import * as _ from 'lodash';
+   
+   // ✅ Good
+   import { debounce } from 'lodash-es';
+   ```
+
+3. **Component Style Optimization**:
+   - Move common styles to global stylesheets
+   - Use CSS variables for theming instead of duplicating styles
+   - Minimize nesting and redundant selectors
+
+4. **Code Splitting**: Use dynamic imports for large libraries
+   ```typescript
+   const chartJs = await import('chart.js');
+   ```
+
+#### Adjusting Budgets
+
+If your app legitimately needs larger bundles (e.g., adding major features), update the budgets in `angular.json`. Always consider the performance impact on users with slower connections.
+
 ## Project Structure Explained
 
 ### Core Module
