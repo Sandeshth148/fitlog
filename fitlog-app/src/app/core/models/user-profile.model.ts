@@ -8,6 +8,9 @@ export interface UserProfile {
   /** User's display name */
   name?: string;
   
+  /** User's age (optional) */
+  age?: number;
+  
   /** User's avatar image (base64 encoded) */
   avatar?: string;
   
@@ -64,6 +67,7 @@ export class UserProfileUtils {
     return {
       id,
       name: partialProfile.name,
+      age: partialProfile.age,
       avatar: partialProfile.avatar,
       heightCm: partialProfile.heightCm || 0,
       preferredUnits: {

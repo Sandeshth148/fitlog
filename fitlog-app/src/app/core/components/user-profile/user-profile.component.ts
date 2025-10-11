@@ -21,6 +21,7 @@ export class UserProfileComponent implements OnInit, OnDestroy {
   avatarPreview = signal<string | null>(null);
   userProfile = signal<UserProfile | null>(null);
   isSubmitting = signal(false);
+  heightUnit = signal<'cm' | 'ft'>('cm');
   
   private langSubscription!: Subscription;
   private profileSubscription!: Subscription;
@@ -50,8 +51,18 @@ export class UserProfileComponent implements OnInit, OnDestroy {
         
         // Update form values if modal is not open (to avoid overwriting user edits)
         if (!this.isModalOpen()) {
+          const heightUnit = (profile.preferredUnits?.height === 'ft' || profile.preferredUnits?.height === 'cm') 
+            ? profile.preferredUnits.height 
+            : 'cm';
+          this.heightUnit.set(heightUnit);
+          
           this.profileForm.patchValue({
-            name: profile.name || ''
+            name: profile.name || '',
+            age: profile.age || '',
+            heightUnit: heightUnit,
+            heightCm: heightUnit === 'cm' ? profile.heightCm : '',
+            heightFeet: heightUnit === 'ft' ? Math.floor(profile.heightCm / 30.48) : '',
+            heightInches: heightUnit === 'ft' ? Math.round((profile.heightCm / 2.54) % 12) : ''
           });
           
           if (profile.avatar) {
@@ -78,7 +89,18 @@ export class UserProfileComponent implements OnInit, OnDestroy {
   private initForm(): void {
     this.profileForm = this.fb.group({
       name: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(50)]],
-      avatar: ['']
+      age: ['', [Validators.min(1), Validators.max(150)]],
+      avatar: [''],
+      heightUnit: ['cm'],
+      heightCm: ['', [Validators.required, Validators.min(50), Validators.max(300)]],
+      heightFeet: [''],
+      heightInches: ['']
+    });
+    
+    // Subscribe to height unit changes
+    this.profileForm.get('heightUnit')?.valueChanges.subscribe((unit: 'cm' | 'ft') => {
+      this.heightUnit.set(unit);
+      this.updateHeightValidators(unit);
     });
   }
   
@@ -91,8 +113,18 @@ export class UserProfileComponent implements OnInit, OnDestroy {
       this.userProfile.set(profile);
       
       if (profile) {
+        const heightUnit = (profile.preferredUnits?.height === 'ft' || profile.preferredUnits?.height === 'cm') 
+          ? profile.preferredUnits.height 
+          : 'cm';
+        this.heightUnit.set(heightUnit);
+        
         this.profileForm.patchValue({
-          name: profile.name || ''
+          name: profile.name || '',
+          age: profile.age || '',
+          heightUnit: heightUnit,
+          heightCm: heightUnit === 'cm' ? profile.heightCm : '',
+          heightFeet: heightUnit === 'ft' ? Math.floor(profile.heightCm / 30.48) : '',
+          heightInches: heightUnit === 'ft' ? Math.round((profile.heightCm / 2.54) % 12) : ''
         });
         
         if (profile.avatar) {
@@ -147,9 +179,25 @@ export class UserProfileComponent implements OnInit, OnDestroy {
     
     try {
       const formValues = this.profileForm.value;
+      
+      // Calculate height in cm
+      let heightCm: number;
+      if (this.heightUnit() === 'cm') {
+        heightCm = parseFloat(formValues.heightCm);
+      } else {
+        const totalInches = (parseFloat(formValues.heightFeet) * 12) + parseFloat(formValues.heightInches);
+        heightCm = totalInches * 2.54;
+      }
+      
       const updatedProfile = await this.userService.saveUserProfile({
         name: formValues.name,
-        avatar: formValues.avatar || this.userProfile()?.avatar
+        age: formValues.age ? parseInt(formValues.age, 10) : undefined,
+        heightCm,
+        avatar: formValues.avatar || this.userProfile()?.avatar,
+        preferredUnits: {
+          height: this.heightUnit(),
+          weight: this.userProfile()?.preferredUnits?.weight || 'kg'
+        }
       });
       
       this.userProfile.set(updatedProfile);
@@ -180,5 +228,31 @@ export class UserProfileComponent implements OnInit, OnDestroy {
       return 'profile.validation.nameMaxLength';
     }
     return '';
+  }
+  
+  /**
+   * Update validators based on selected height unit
+   */
+  private updateHeightValidators(unit: 'cm' | 'ft'): void {
+    const heightCmControl = this.profileForm.get('heightCm');
+    const heightFeetControl = this.profileForm.get('heightFeet');
+    const heightInchesControl = this.profileForm.get('heightInches');
+    
+    if (unit === 'cm') {
+      heightCmControl?.setValidators([Validators.required, Validators.min(50), Validators.max(300)]);
+      heightFeetControl?.clearValidators();
+      heightInchesControl?.clearValidators();
+      heightFeetControl?.setValue('');
+      heightInchesControl?.setValue('');
+    } else {
+      heightFeetControl?.setValidators([Validators.required, Validators.min(1), Validators.max(9)]);
+      heightInchesControl?.setValidators([Validators.required, Validators.min(0), Validators.max(11)]);
+      heightCmControl?.clearValidators();
+      heightCmControl?.setValue('');
+    }
+    
+    heightCmControl?.updateValueAndValidity();
+    heightFeetControl?.updateValueAndValidity();
+    heightInchesControl?.updateValueAndValidity();
   }
 }

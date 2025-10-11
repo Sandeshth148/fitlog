@@ -290,3 +290,95 @@ label {
     transform: rotate(360deg);
   }
 }
+
+/* Additional styles for age and height fields */
+.required {
+  color: var(--color-danger, #ef4444);
+  font-size: 1rem;
+}
+
+.optional {
+  font-weight: 400;
+  color: var(--color-text-secondary);
+  font-size: 0.75rem;
+  margin-left: 0.25rem;
+}
+
+.unit-selector {
+  display: flex;
+  gap: 0.5rem;
+  background-color: var(--color-bg-secondary, #f3f4f6);
+  padding: 0.25rem;
+  border-radius: 8px;
+}
+
+.unit-btn {
+  flex: 1;
+  padding: 0.625rem 1rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  border: none;
+  border-radius: 6px;
+  background-color: transparent;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  
+  &:hover {
+    background-color: var(--color-bg);
+    color: var(--color-text);
+  }
+  
+  &.active {
+    background-color: var(--color-primary);
+    color: white;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+}
+
+.input-with-unit {
+  position: relative;
+  display: flex;
+  align-items: center;
+  
+  .form-input {
+    padding-right: 3.5rem;
+  }
+  
+  .unit-label {
+    position: absolute;
+    right: 1rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--color-text-secondary);
+    pointer-events: none;
+  }
+}
+
+.height-feet-inches {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  
+  @media (max-width: 480px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.height-input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+/* Remove spinner for number inputs */
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type="number"] {
+  appearance: textfield;
+  -moz-appearance: textfield;
+}

@@ -128,7 +128,10 @@ export class TranslationService {
           title: 'User Profile',
           guest: 'Guest',
           name: 'Name',
+          age: 'Age',
+          optional: 'optional',
           namePlaceholder: 'Enter your name',
+          agePlaceholder: 'Enter your age',
           chooseImage: 'Choose Image',
           imageHint: 'JPG, PNG or GIF (max 5MB)',
           saveSuccess: 'Profile saved successfully',
@@ -141,6 +144,7 @@ export class TranslationService {
         },
         common: {
           save: 'Save',
+          saving: 'Saving...',
           cancel: 'Cancel',
           edit: 'Edit',
           delete: 'Delete'
