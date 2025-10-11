@@ -253,11 +253,6 @@
   - ⚪ Module Federation
   - ⚪ Shared dependencies
   - ⚪ Independent deployment
-
----
-
-## 🌐 PHASE 4: Backend + Integration Layer
-
 > **Focus:** Full-stack development with NestJS
 
 ### Backend Development (NestJS)
@@ -323,13 +318,7 @@
   - ⚪ Message queue (RabbitMQ/Redis)
   - ⚪ Event-driven architecture
   - ⚪ Service communication
-
-### Frontend-Backend Integration
-
-- [ ] **HTTP Interceptors**
-  - ⚪ Auth token injection
-  - ⚪ Error handling
-  - ⚪ Loading indicators
+  - ⚪ API Gateway (NGINX/Express)
   - ⚪ Request/response logging
   
 - [ ] **Offline-First Sync**
