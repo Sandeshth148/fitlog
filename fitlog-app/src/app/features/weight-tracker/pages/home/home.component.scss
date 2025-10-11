@@ -41,7 +41,7 @@
     font-size: 1.2rem;
   }
 
-  .fab {
+  .add-entry-btn {
     font-size: 1.1rem;
     font-weight: 500;
     background: var(--color-primary);
@@ -63,6 +63,30 @@
       background: var(--color-primary-darker);
       transform: translateY(0);
       box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    
+    /* Hide on mobile, show on desktop */
+    @media (max-width: 1023px) {
+      display: none;
+    }
+  }
+}
+
+/* Mobile optimizations */
+@media (max-width: 768px) {
+  .fitlog-container {
+    padding: 1rem;
+  }
+  
+  .fitlog-header {
+    h1 {
+      font-size: 1.5rem;
+    }
+  }
+  
+  .fitlog-main {
+    p {
+      font-size: 1rem;
     }
   }
 }

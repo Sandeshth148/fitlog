@@ -5,13 +5,14 @@ import { StorageService } from '../../../../core/services/storage.service';
 import { EntryListComponent } from '../../components/entry-list/entry-list.component';
 import { EntryFormComponent } from '../../components/entry-form/entry-form.component';
 import { ButtonComponent } from '../../../../shared/components/button/button.component';
+import { FabComponent } from '../../../../shared/components/fab/fab.component';
 import { WeightEntry } from '../../models/weight-entry.model';
 import { TranslatePipe } from '../../../../core/pipes/translate.pipe';
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CommonModule, EntryListComponent, EntryFormComponent, ButtonComponent, TranslatePipe],
+  imports: [CommonModule, EntryListComponent, EntryFormComponent, ButtonComponent, FabComponent, TranslatePipe],
   template: `
     <section class="fitlog-container">
       <header class="fitlog-header">
@@ -26,10 +27,21 @@ import { TranslatePipe } from '../../../../core/pipes/translate.pipe';
             (clicked)="showEntryForm()" 
             [ariaLabel]="'home.addEntry' | translate" 
             size="lg" 
-            class="fab"
+            class="add-entry-btn"
           >
             {{ 'home.addEntry' | translate }}
           </app-button>
+        }
+        
+        <!-- Mobile FAB -->
+        @if (!isEntryFormVisible()) {
+          <app-fab 
+            (clicked)="showEntryForm()" 
+            [ariaLabel]="'home.addEntry' | translate"
+            color="primary"
+            size="normal">
+            +
+          </app-fab>
         }
 
         @if (isEntryFormVisible()) {
