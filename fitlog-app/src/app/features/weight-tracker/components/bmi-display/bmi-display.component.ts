@@ -66,6 +66,7 @@ import { TranslatePipe } from '../../../../core/pipes/translate.pipe';
         text-transform: uppercase;
         letter-spacing: 0.05em;
         opacity: 0.7;
+        margin-left: 5px;
       }
       
       .value {

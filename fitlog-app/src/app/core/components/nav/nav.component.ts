@@ -26,8 +26,14 @@ import { UserProfileComponent } from '../user-profile/user-profile.component';
         
         <!-- Navigation links and controls -->
         <div class="app-nav-links" [class.mobile-open]="mobileMenuOpen">
-          <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" (click)="closeMobileMenu()">{{ 'nav.home' | translate }}</a>
-          <a routerLink="/trends" routerLinkActive="active" (click)="closeMobileMenu()">{{ 'nav.trends' | translate }}</a>
+          <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" (click)="closeMobileMenu()">
+            <span class="nav-icon">🏠</span>
+            <span class="nav-text">{{ 'nav.home' | translate }}</span>
+          </a>
+          <a routerLink="/trends" routerLinkActive="active" (click)="closeMobileMenu()">
+            <span class="nav-icon">📈</span>
+            <span class="nav-text">{{ 'nav.trends' | translate }}</span>
+          </a>
           
           <div class="nav-controls">
             <app-theme-selector></app-theme-selector>
@@ -119,6 +125,20 @@ import { UserProfileComponent } from '../user-profile/user-profile.component';
         padding: 0.25rem 0;
         position: relative;
         transition: color 0.2s ease;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        
+        .nav-icon {
+          font-size: 1.2rem;
+          display: inline-flex;
+          align-items: center;
+        }
+        
+        .nav-text {
+          display: inline-flex;
+          align-items: center;
+        }
         
         &:hover {
           color: white;

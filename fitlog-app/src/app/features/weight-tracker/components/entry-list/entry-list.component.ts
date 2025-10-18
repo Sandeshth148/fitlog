@@ -1,5 +1,6 @@
 import { Component, Input, Output, EventEmitter, ChangeDetectionStrategy, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { ScrollingModule } from '@angular/cdk/scrolling';
 import { WeightEntry } from '../../models/weight-entry.model';
 import { ButtonComponent } from '../../../../shared/components/button/button.component';
 import { BmiDisplayComponent } from '../bmi-display/bmi-display.component';
@@ -13,64 +14,70 @@ import { SwipeDirective } from '../../../../shared/directives/swipe.directive';
 @Component({
   selector: 'app-entry-list',
   standalone: true,
-  imports: [CommonModule, ButtonComponent, BmiDisplayComponent, TranslatePipe, SwipeDirective],
+  imports: [CommonModule, ScrollingModule, ButtonComponent, BmiDisplayComponent, TranslatePipe, SwipeDirective],
   template: `
     <div class="entry-list-container">
       @if (entries.length > 0) {
-        <h3>{{ 'home.recentEntries' | translate }}</h3>
-        <ul class="entry-list">
-          @for (entry of entries; track entry.id) {
-            <li class="entry-item" 
-                appSwipe
-                (swipeLeft)="onSwipeLeft(entry)"
-                (swipeRight)="onSwipeRight(entry)"
-                [class.swiping-left]="swipingStates[entry.id] && swipingStates[entry.id].direction === 'left'"
-                [class.swiping-right]="swipingStates[entry.id] && swipingStates[entry.id].direction === 'right'">
-              <div class="entry-details" (click)="onEntryClick(entry)">
-                <div class="entry-date-time">
-                  <span class="entry-date">{{ entry.date | date: 'mediumDate' }}</span>
-                  @if (entry.time) {
-                    <span class="entry-time">{{ entry.time }}</span>
-                  }
+        <h3>{{ 'home.recentEntries' | translate }} ({{ entries.length }})</h3>
+        
+        <!-- Virtual scroll viewport -->
+        <cdk-virtual-scroll-viewport 
+          [itemSize]="itemHeight" 
+          class="entry-list-viewport"
+          [minBufferPx]="300"
+          [maxBufferPx]="600">
+          
+          <div *cdkVirtualFor="let entry of entries; trackBy: trackById" 
+               class="entry-item" 
+               appSwipe
+               (swipeLeft)="onSwipeLeft(entry)"
+               (swipeRight)="onSwipeRight(entry)"
+               [class.swiping-left]="swipingStates[entry.id] && swipingStates[entry.id].direction === 'left'"
+               [class.swiping-right]="swipingStates[entry.id] && swipingStates[entry.id].direction === 'right'">
+            <div class="entry-details" (click)="onEntryClick(entry)">
+              <div class="entry-date-time">
+                <span class="entry-date">{{ entry.date | date: 'mediumDate' }}</span>
+                @if (entry.time) {
+                  <span class="entry-time">{{ entry.time }}</span>
+                }
+              </div>
+              <span class="entry-weight" [attr.data-unit]="entry.units || 'kg'">
+                {{ entry.weightKg.toFixed(1) }}
+              </span>
+              
+              @if (hasHeight && entry.bmi && showBmi) {
+                <div class="entry-bmi">
+                  <app-bmi-display 
+                    [bmi]="entry.bmi" 
+                    [heightCm]="userHeight"
+                    [showIdealWeight]="false">
+                  </app-bmi-display>
                 </div>
-                <span class="entry-weight" [attr.data-unit]="entry.units || 'kg'">
-                  {{ entry.weightKg.toFixed(1) }}
-                </span>
-                
-                @if (hasHeight && entry.bmi && showBmi) {
-                  <div class="entry-bmi">
-                    <app-bmi-display 
-                      [bmi]="entry.bmi" 
-                      [heightCm]="userHeight"
-                      [showIdealWeight]="false">
-                    </app-bmi-display>
-                  </div>
-                }
-                
-                @if (entry.notes) {
-                  <span class="entry-notes">{{ entry.notes }}</span>
-                }
-              </div>
-              <div class="entry-actions">
-                <app-button (clicked)="entryEdited.emit(entry)" variant="ghost" size="sm">
-                  {{ 'form.edit' | translate }}
-                </app-button>
-                <app-button (clicked)="entryDeleted.emit(entry.id)" variant="ghost" size="sm" class="delete-btn">
-                  {{ 'form.delete' | translate }}
-                </app-button>
-              </div>
-              <!-- Swipe action indicators -->
-              <div class="swipe-action swipe-action-left">
-                <span class="swipe-icon">🗑️</span>
-                <span class="swipe-text">{{ 'form.delete' | translate }}</span>
-              </div>
-              <div class="swipe-action swipe-action-right">
-                <span class="swipe-icon">✏️</span>
-                <span class="swipe-text">{{ 'form.edit' | translate }}</span>
-              </div>
-            </li>
-          }
-        </ul>
+              }
+              
+              @if (entry.notes) {
+                <span class="entry-notes">{{ entry.notes }}</span>
+              }
+            </div>
+            <div class="entry-actions">
+              <app-button (clicked)="entryEdited.emit(entry)" variant="ghost" size="sm">
+                {{ 'form.edit' | translate }}
+              </app-button>
+              <app-button (clicked)="entryDeleted.emit(entry.id)" variant="ghost" size="sm" class="delete-btn">
+                {{ 'form.delete' | translate }}
+              </app-button>
+            </div>
+            <!-- Swipe action indicators -->
+            <div class="swipe-action swipe-action-left">
+              <span class="swipe-icon">🗑️</span>
+              <span class="swipe-text">{{ 'form.delete' | translate }}</span>
+            </div>
+            <div class="swipe-action swipe-action-right">
+              <span class="swipe-icon">✏️</span>
+              <span class="swipe-text">{{ 'form.edit' | translate }}</span>
+            </div>
+          </div>
+        </cdk-virtual-scroll-viewport>
       } @else {
         <div class="no-entries-placeholder">
           <p>{{ 'home.noEntries' | translate }}</p>
@@ -91,6 +98,9 @@ export class EntryListComponent implements OnInit, OnDestroy {
   hasHeight: boolean = false;
   showBmi: boolean = true; // Can be made configurable later
   private langSubscription: Subscription = new Subscription();
+  
+  // Virtual scroll configuration
+  itemHeight: number = 120; // Approximate height of each entry item in pixels
   
   // Track swipe states for each entry
   swipingStates: { [id: string]: { direction: 'left' | 'right' | null, progress: number } } = {};

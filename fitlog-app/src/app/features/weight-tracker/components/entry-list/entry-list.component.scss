@@ -4,6 +4,7 @@
   max-width: 800px;
   margin-left: auto;
   margin-right: auto;
+  min-width: 300px;
 
   h3 {
     color: var(--color-text);
@@ -23,6 +24,30 @@
       // background-color: var(--color-primary);
       // border-radius: 2px;
     }
+  }
+}
+
+/* Virtual scroll viewport */
+.entry-list-viewport {
+  height: 600px; /* Fixed height for virtual scrolling */
+  width: 100%;
+  
+  @media (max-width: 768px) {
+    height: calc(100vh - 250px); /* Adjust for mobile screens */
+  }
+  
+  /* Override CDK virtual scroll default styles */
+  ::ng-deep .cdk-virtual-scroll-content-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    padding: 0.5rem 0;
+    width: 100%; /* Ensure content wrapper takes full width */
+  }
+  
+  /* Ensure viewport itself takes full width */
+  ::ng-deep .cdk-virtual-scroll-viewport {
+    width: 100%;
   }
 }
 
@@ -48,6 +73,8 @@
   position: relative;
   overflow: hidden;
   touch-action: pan-y; /* Allow vertical scrolling but handle horizontal swipes */
+  width: 100%; /* Ensure entry takes full width */
+  box-sizing: border-box; /* Include padding in width calculation */
   
   &:hover {
     transform: translateY(-2px);
