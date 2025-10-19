@@ -1,9 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Store } from '@ngrx/store';
-import { Observable } from 'rxjs';
-import * as StreakActions from './store/streaks.actions';
-import * as StreakSelectors from './store/streaks.selectors';
+import { StorageService } from '../../core/services/storage.service';
+import { StreakCalculatorService } from './services/streak-calculator.service';
+import { WeightEntry } from '../weight-tracker/models/weight-entry.model';
 
 @Component({
   selector: 'app-streaks',
@@ -17,43 +16,80 @@ import * as StreakSelectors from './store/streaks.selectors';
       </div>
 
       <div class="streak-display">
-        <div class="streak-card">
+        <div class="streak-card" title="Days you've logged weight in a row">
           <div class="fire-icon">🔥</div>
           <h2>Current Streak</h2>
-          <div class="streak-number">{{ currentStreak$ | async }} days</div>
-          <p class="last-checkin">Last check-in: {{ lastCheckIn$ | async | date:'short' }}</p>
+          <div class="streak-number">{{ currentStreak }} days</div>
+          <p class="last-checkin" *ngIf="lastLogDate">Last: {{ lastLogDate | date:'MMM d' }}</p>
+          <p class="last-checkin" *ngIf="!lastLogDate">No entries yet</p>
         </div>
 
-        <div class="streak-card">
+        <div class="streak-card" title="Your longest streak ever">
           <div class="trophy-icon">🏆</div>
           <h2>Longest Streak</h2>
-          <div class="streak-number">{{ longestStreak$ | async }} days</div>
+          <div class="streak-number">{{ longestStreak }} days</div>
           <p class="subtitle-text">Your personal best!</p>
         </div>
 
-        <div class="streak-card">
-          <div class="freeze-icon">❄️</div>
-          <h2>Freezes Available</h2>
-          <div class="streak-number">{{ freezesAvailable$ | async }}</div>
-          <p class="subtitle-text">Use when you miss a day</p>
+        <div class="streak-card" title="Total days you've tracked your weight">
+          <div class="calendar-icon">📅</div>
+          <h2>Total Days Logged</h2>
+          <div class="streak-number">{{ totalDaysLogged }}</div>
+          <p class="subtitle-text">Keep it up!</p>
         </div>
       </div>
 
-      <div class="streak-actions">
-        <button class="action-btn primary" (click)="incrementStreak()">
-          ✅ Log Today's Weight
-        </button>
-        <button class="action-btn secondary" (click)="useFreeze()" [disabled]="(freezesAvailable$ | async) === 0">
-          ❄️ Use Freeze
-        </button>
-      </div>
+      <!-- Badges Section -->
+      <div class="badges-section">
+        <h2>🏆 Your Achievements</h2>
+        <div class="badges-grid">
+          <div class="badge-card" [class.earned]="totalDaysLogged >= 1" [class.locked]="totalDaysLogged < 1">
+            <div class="badge-icon">🎯</div>
+            <h3>Getting Started</h3>
+            <p>Log your first weight</p>
+            <div class="badge-status" *ngIf="totalDaysLogged >= 1">✅ Earned!</div>
+            <div class="badge-status locked" *ngIf="totalDaysLogged < 1">🔒 Locked</div>
+          </div>
 
-      <div class="ngrx-info">
-        <h3>🎓 NGRX State Management Active!</h3>
-        <p>Open Redux DevTools to see actions and state</p>
-        <div class="loading-state" *ngIf="loading$ | async">
-          <div class="spinner"></div>
-          <span>Loading streaks...</span>
+          <div class="badge-card" [class.earned]="currentStreak >= 3" [class.locked]="currentStreak < 3">
+            <div class="badge-icon">🔥</div>
+            <h3>3-Day Streak</h3>
+            <p>Log weight 3 days in a row</p>
+            <div class="badge-status" *ngIf="currentStreak >= 3">✅ Earned!</div>
+            <div class="badge-status locked" *ngIf="currentStreak < 3">🔒 {{ currentStreak }}/3 days</div>
+          </div>
+
+          <div class="badge-card" [class.earned]="currentStreak >= 7" [class.locked]="currentStreak < 7">
+            <div class="badge-icon">⭐</div>
+            <h3>Week Warrior</h3>
+            <p>7-day streak achieved</p>
+            <div class="badge-status" *ngIf="currentStreak >= 7">✅ Earned!</div>
+            <div class="badge-status locked" *ngIf="currentStreak < 7">🔒 {{ currentStreak }}/7 days</div>
+          </div>
+
+          <div class="badge-card" [class.earned]="currentStreak >= 30" [class.locked]="currentStreak < 30">
+            <div class="badge-icon">💎</div>
+            <h3>Monthly Master</h3>
+            <p>30-day streak achieved</p>
+            <div class="badge-status" *ngIf="currentStreak >= 30">✅ Earned!</div>
+            <div class="badge-status locked" *ngIf="currentStreak < 30">🔒 {{ currentStreak }}/30 days</div>
+          </div>
+
+          <div class="badge-card" [class.earned]="currentStreak >= 100" [class.locked]="currentStreak < 100">
+            <div class="badge-icon">👑</div>
+            <h3>Century Club</h3>
+            <p>100-day streak achieved</p>
+            <div class="badge-status" *ngIf="currentStreak >= 100">✅ Earned!</div>
+            <div class="badge-status locked" *ngIf="currentStreak < 100">🔒 {{ currentStreak }}/100 days</div>
+          </div>
+
+          <div class="badge-card" [class.earned]="hasCompleteProfile" [class.locked]="!hasCompleteProfile">
+            <div class="badge-icon">📝</div>
+            <h3>Profile Complete</h3>
+            <p>Add name, age & profile pic</p>
+            <div class="badge-status" *ngIf="hasCompleteProfile">✅ Earned!</div>
+            <div class="badge-status locked" *ngIf="!hasCompleteProfile">🔒 Complete your profile</div>
+          </div>
         </div>
       </div>
 
@@ -196,20 +232,95 @@ import * as StreakSelectors from './store/streaks.selectors';
       cursor: not-allowed;
     }
 
-    .ngrx-info {
-      background: var(--color-surface);
-      border-left: 4px solid #667eea;
-      padding: 1.5rem;
-      border-radius: 8px;
-      margin-bottom: 3rem;
+    .calendar-icon {
+      font-size: 4rem;
+      margin-bottom: 1rem;
+      animation: pulse 2s ease-in-out infinite;
     }
 
-    .ngrx-info h3 {
-      margin-bottom: 0.5rem;
+    /* Badges Section */
+    .badges-section {
+      margin: 3rem 0;
+    }
+
+    .badges-section h2 {
+      text-align: center;
+      font-size: 2rem;
+      margin-bottom: 2rem;
       color: var(--color-text-primary);
     }
 
-    .ngrx-info p {
+    .badges-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .badge-card {
+      background: var(--color-surface);
+      border-radius: 12px;
+      padding: 1.5rem;
+      text-align: center;
+      transition: all 0.3s;
+      border: 2px solid transparent;
+    }
+
+    .badge-card.earned {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      transform: scale(1.05);
+      box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+    }
+
+    .badge-card.earned .badge-icon {
+      animation: bounce 1s ease-in-out;
+    }
+
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+
+    .badge-card.locked {
+      opacity: 0.5;
+      filter: grayscale(100%);
+    }
+
+    .badge-card:hover:not(.locked) {
+      transform: translateY(-4px);
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+    }
+
+    .badge-icon {
+      font-size: 3rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .badge-card h3 {
+      font-size: 1.1rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .badge-card p {
+      font-size: 0.9rem;
+      opacity: 0.8;
+      margin-bottom: 0.5rem;
+    }
+
+    .badge-card.earned p {
+      opacity: 0.9;
+    }
+
+    .badge-status {
+      font-weight: 600;
+      margin-top: 0.5rem;
+      padding: 0.25rem 0.5rem;
+      border-radius: 4px;
+      background: rgba(255, 255, 255, 0.2);
+    }
+
+    .badge-status.locked {
+      background: rgba(0, 0, 0, 0.1);
       color: var(--color-text-secondary);
     }
 
@@ -301,34 +412,50 @@ import * as StreakSelectors from './store/streaks.selectors';
   `]
 })
 export class StreaksComponent implements OnInit {
-  // Observables from NGRX store
-  currentStreak$: Observable<number>;
-  longestStreak$: Observable<number>;
-  freezesAvailable$: Observable<number>;
-  lastCheckIn$: Observable<Date | undefined>;
-  loading$: Observable<boolean>;
+  // Streak data
+  currentStreak = 0;
+  longestStreak = 0;
+  totalDaysLogged = 0;
+  lastLogDate: Date | null = null;
+  hasCompleteProfile = false;
 
-  constructor(private store: Store) {
-    // Select data from store
-    this.currentStreak$ = this.store.select(StreakSelectors.selectCurrentStreakCount);
-    this.longestStreak$ = this.store.select(StreakSelectors.selectLongestStreak);
-    this.freezesAvailable$ = this.store.select(StreakSelectors.selectFreezesAvailable);
-    this.lastCheckIn$ = this.store.select(StreakSelectors.selectLastCheckIn);
-    this.loading$ = this.store.select(StreakSelectors.selectStreaksLoading);
+  constructor(
+    private storageService: StorageService,
+    private streakCalculator: StreakCalculatorService
+  ) {}
+
+  async ngOnInit(): Promise<void> {
+    await this.calculateStreaks();
+    await this.checkProfileCompletion();
   }
 
-  ngOnInit(): void {
-    // Load streaks when component initializes
-    this.store.dispatch(StreakActions.loadStreaks());
+  /**
+   * Calculate streaks automatically from weight entries
+   */
+  private async calculateStreaks(): Promise<void> {
+    const entries = await this.storageService.getAllEntries();
+    const result = this.streakCalculator.calculateStreak(entries);
+    
+    this.currentStreak = result.currentStreak;
+    this.longestStreak = result.longestStreak;
+    this.totalDaysLogged = result.totalDaysLogged;
+    this.lastLogDate = result.lastLogDate;
   }
 
-  incrementStreak(): void {
-    // Dispatch action to increment streak
-    this.store.dispatch(StreakActions.incrementStreak({ streakId: '1' }));
-  }
-
-  useFreeze(): void {
-    // Dispatch action to use a freeze
-    this.store.dispatch(StreakActions.useFreeze({ streakId: '1' }));
+  /**
+   * Check if user has completed their profile
+   */
+  private async checkProfileCompletion(): Promise<void> {
+    const profile = await this.storageService.getUserProfile();
+    
+    if (profile) {
+      // Profile is complete if has name, age, and avatar
+      this.hasCompleteProfile = !!(
+        profile.name && 
+        profile.name.trim().length > 0 &&
+        profile.age && 
+        profile.age > 0
+      );
+    }
   }
 }

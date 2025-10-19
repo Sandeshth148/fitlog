@@ -28,7 +28,8 @@ export const routes: Routes = [
     loadComponent: () =>
       import('./features/streaks/streaks.component').then(
         (m) => m.StreaksComponent
-      )
+      ),
+    canActivate: [HeightSetupGuard]
   },
   {
     path: 'setup',
