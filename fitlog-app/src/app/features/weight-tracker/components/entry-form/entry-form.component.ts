@@ -5,6 +5,8 @@ import { WeightEntry, WeightEntryUtils } from '../../models/weight-entry.model';
 import { ButtonComponent } from '../../../../shared/components/button/button.component';
 import { DateValidationService } from '../../../../core/services/date-validation.service';
 import { StorageService } from '../../../../core/services/storage.service';
+import { ToastService } from '../../../../core/services/toast.service';
+import { StreakCalculatorService } from '../../../streaks/services/streak-calculator.service';
 
 @Component({
   selector: 'app-entry-form',
@@ -26,7 +28,9 @@ export class EntryFormComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     public dateValidationService: DateValidationService,
-    private storageService: StorageService
+    private storageService: StorageService,
+    private toastService: ToastService,
+    private streakCalculator: StreakCalculatorService
   ) {
     this.minDate = this.dateValidationService.getMinDateString();
   }
@@ -107,6 +111,10 @@ export class EntryFormComponent implements OnInit {
         
         console.log('EntryFormComponent: Entry saved with BMI', savedEntry);
         this.entrySaved.emit(savedEntry);
+        
+        // Calculate and show streak toast
+        await this.showStreakToast();
+        
         this.resetForm();
       } catch (error) {
         console.error('EntryFormComponent: Error saving entry', error);
@@ -126,6 +134,19 @@ export class EntryFormComponent implements OnInit {
       date: this.today,
       units: 'kg'
     });
+  }
+
+  /**
+   * Show streak toast after logging weight
+   */
+  private async showStreakToast(): Promise<void> {
+    const entries = await this.storageService.getAllEntries();
+    const result = this.streakCalculator.calculateStreak(entries);
+    
+    if (result.currentStreak > 0) {
+      const isNewRecord = result.currentStreak === result.longestStreak && result.currentStreak > 1;
+      this.toastService.streak(result.currentStreak, isNewRecord, true); // justEarned = true
+    }
   }
 
   // Helper method to mark all controls as touched for validation display

@@ -49,11 +49,17 @@ export class ToastService {
   /**
    * Show a streak toast (special styling)
    */
-  streak(currentStreak: number, isNewRecord = false): void {
+  streak(currentStreak: number, isNewRecord = false, justEarned = false): void {
     const icon = currentStreak >= 7 ? '🔥' : '⭐';
-    const message = isNewRecord 
-      ? `🎉 New record! ${currentStreak} day streak!`
-      : `${icon} ${currentStreak} day streak!`;
+    let message: string;
+    
+    if (justEarned) {
+      message = `🎉 Streak extended! ${currentStreak} days!`;
+    } else if (isNewRecord) {
+      message = `🎉 New record! ${currentStreak} day streak!`;
+    } else {
+      message = `${icon} ${currentStreak} day streak!`;
+    }
     
     this.show(message, 'success', icon, 4000);
   }

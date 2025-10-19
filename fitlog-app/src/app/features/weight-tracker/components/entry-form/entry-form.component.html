@@ -16,7 +16,17 @@
   <div class="form-field-group">
     <div class="form-field weight-field">
       <label for="weight">Weight</label>
-      <input id="weight" type="number" formControlName="weight" step="0.1" placeholder="0.0">
+      <input 
+        id="weight" 
+        type="number" 
+        formControlName="weight" 
+        step="0.1" 
+        min="0"
+        max="500"
+        placeholder="0.0"
+        inputmode="decimal"
+        pattern="[0-9]*\.?[0-9]*"
+      >
     </div>
     <div class="form-field units-field">
       <label for="units">Units</label>
