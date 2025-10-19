@@ -1,5 +1,9 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Store } from '@ngrx/store';
+import { Observable } from 'rxjs';
+import * as StreakActions from './store/streaks.actions';
+import * as StreakSelectors from './store/streaks.selectors';
 
 @Component({
   selector: 'app-streaks',
@@ -12,15 +16,44 @@ import { CommonModule } from '@angular/common';
         <p class="subtitle">Track your consistency and earn badges!</p>
       </div>
 
-      <div class="mfe-placeholder">
-        <div class="placeholder-content">
+      <div class="streak-display">
+        <div class="streak-card">
           <div class="fire-icon">🔥</div>
-          <h2>Streaks Micro Frontend</h2>
-          <p>This is a placeholder. The Streaks MFE will load here!</p>
-          <div class="loading-indicator">
-            <div class="spinner"></div>
-            <p>Setting up Micro Frontend...</p>
-          </div>
+          <h2>Current Streak</h2>
+          <div class="streak-number">{{ currentStreak$ | async }} days</div>
+          <p class="last-checkin">Last check-in: {{ lastCheckIn$ | async | date:'short' }}</p>
+        </div>
+
+        <div class="streak-card">
+          <div class="trophy-icon">🏆</div>
+          <h2>Longest Streak</h2>
+          <div class="streak-number">{{ longestStreak$ | async }} days</div>
+          <p class="subtitle-text">Your personal best!</p>
+        </div>
+
+        <div class="streak-card">
+          <div class="freeze-icon">❄️</div>
+          <h2>Freezes Available</h2>
+          <div class="streak-number">{{ freezesAvailable$ | async }}</div>
+          <p class="subtitle-text">Use when you miss a day</p>
+        </div>
+      </div>
+
+      <div class="streak-actions">
+        <button class="action-btn primary" (click)="incrementStreak()">
+          ✅ Log Today's Weight
+        </button>
+        <button class="action-btn secondary" (click)="useFreeze()" [disabled]="(freezesAvailable$ | async) === 0">
+          ❄️ Use Freeze
+        </button>
+      </div>
+
+      <div class="ngrx-info">
+        <h3>🎓 NGRX State Management Active!</h3>
+        <p>Open Redux DevTools to see actions and state</p>
+        <div class="loading-state" *ngIf="loading$ | async">
+          <div class="spinner"></div>
+          <span>Loading streaks...</span>
         </div>
       </div>
 
@@ -66,21 +99,29 @@ import { CommonModule } from '@angular/common';
       color: var(--color-text-secondary);
     }
 
-    .mfe-placeholder {
+    .streak-display {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 2rem;
+      margin-bottom: 3rem;
+    }
+
+    .streak-card {
       background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
       border-radius: 12px;
-      padding: 4rem 2rem;
-      margin-bottom: 3rem;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-    }
-
-    .placeholder-content {
+      padding: 2rem;
       text-align: center;
       color: white;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+      transition: transform 0.2s;
     }
 
-    .fire-icon {
-      font-size: 5rem;
+    .streak-card:hover {
+      transform: translateY(-4px);
+    }
+
+    .fire-icon, .trophy-icon, .freeze-icon {
+      font-size: 4rem;
       margin-bottom: 1rem;
       animation: pulse 2s ease-in-out infinite;
     }
@@ -94,22 +135,90 @@ import { CommonModule } from '@angular/common';
       }
     }
 
-    .placeholder-content h2 {
-      font-size: 2rem;
-      margin-bottom: 1rem;
-    }
-
-    .placeholder-content p {
+    .streak-card h2 {
       font-size: 1.2rem;
+      margin-bottom: 0.5rem;
       opacity: 0.9;
     }
 
-    .loading-indicator {
-      margin-top: 2rem;
+    .streak-number {
+      font-size: 3rem;
+      font-weight: bold;
+      margin: 1rem 0;
+    }
+
+    .last-checkin, .subtitle-text {
+      font-size: 0.9rem;
+      opacity: 0.8;
+    }
+
+    .streak-actions {
       display: flex;
-      flex-direction: column;
+      gap: 1rem;
+      justify-content: center;
+      margin-bottom: 3rem;
+      flex-wrap: wrap;
+    }
+
+    .action-btn {
+      padding: 1rem 2rem;
+      font-size: 1.1rem;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-weight: 600;
+    }
+
+    .action-btn.primary {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+    }
+
+    .action-btn.primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+    }
+
+    .action-btn.secondary {
+      background: var(--color-surface);
+      color: var(--color-text-primary);
+      border: 2px solid #667eea;
+    }
+
+    .action-btn.secondary:hover:not(:disabled) {
+      background: #667eea;
+      color: white;
+    }
+
+    .action-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .ngrx-info {
+      background: var(--color-surface);
+      border-left: 4px solid #667eea;
+      padding: 1.5rem;
+      border-radius: 8px;
+      margin-bottom: 3rem;
+    }
+
+    .ngrx-info h3 {
+      margin-bottom: 0.5rem;
+      color: var(--color-text-primary);
+    }
+
+    .ngrx-info p {
+      color: var(--color-text-secondary);
+    }
+
+    .loading-state {
+      display: flex;
       align-items: center;
       gap: 1rem;
+      margin-top: 1rem;
+      color: #667eea;
     }
 
     .spinner {
@@ -191,4 +300,35 @@ import { CommonModule } from '@angular/common';
     }
   `]
 })
-export class StreaksComponent {}
+export class StreaksComponent implements OnInit {
+  // Observables from NGRX store
+  currentStreak$: Observable<number>;
+  longestStreak$: Observable<number>;
+  freezesAvailable$: Observable<number>;
+  lastCheckIn$: Observable<Date | undefined>;
+  loading$: Observable<boolean>;
+
+  constructor(private store: Store) {
+    // Select data from store
+    this.currentStreak$ = this.store.select(StreakSelectors.selectCurrentStreakCount);
+    this.longestStreak$ = this.store.select(StreakSelectors.selectLongestStreak);
+    this.freezesAvailable$ = this.store.select(StreakSelectors.selectFreezesAvailable);
+    this.lastCheckIn$ = this.store.select(StreakSelectors.selectLastCheckIn);
+    this.loading$ = this.store.select(StreakSelectors.selectStreaksLoading);
+  }
+
+  ngOnInit(): void {
+    // Load streaks when component initializes
+    this.store.dispatch(StreakActions.loadStreaks());
+  }
+
+  incrementStreak(): void {
+    // Dispatch action to increment streak
+    this.store.dispatch(StreakActions.incrementStreak({ streakId: '1' }));
+  }
+
+  useFreeze(): void {
+    // Dispatch action to use a freeze
+    this.store.dispatch(StreakActions.useFreeze({ streakId: '1' }));
+  }
+}
