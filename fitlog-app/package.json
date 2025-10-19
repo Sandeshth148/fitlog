@@ -12,6 +12,7 @@
   "private": true,
   "dependencies": {
     "@angular-architects/module-federation": "^20.0.0",
+    "@angular-architects/native-federation": "^20.1.7",
     "@angular/animations": "^20.0.0",
     "@angular/cdk": "^20.2.9",
     "@angular/common": "^20.0.0",
@@ -22,6 +23,10 @@
     "@angular/platform-browser-dynamic": "^20.0.0",
     "@angular/router": "^20.0.0",
     "@angular/service-worker": "^20.0.0",
+    "@ngrx/effects": "^20.0.1",
+    "@ngrx/entity": "^20.0.1",
+    "@ngrx/store": "^20.0.1",
+    "@ngrx/store-devtools": "^20.0.1",
     "chart.js": "^4.5.0",
     "chartjs-adapter-date-fns": "^3.0.0",
     "date-fns": "^4.1.0",

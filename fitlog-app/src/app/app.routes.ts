@@ -24,6 +24,13 @@ export const routes: Routes = [
     pathMatch: 'full'
   },
   {
+    path: 'streaks',
+    loadComponent: () =>
+      import('./features/streaks/streaks.component').then(
+        (m) => m.StreaksComponent
+      )
+  },
+  {
     path: 'setup',
     loadComponent: () =>
       import('./features/weight-tracker/pages/setup/setup.component').then(

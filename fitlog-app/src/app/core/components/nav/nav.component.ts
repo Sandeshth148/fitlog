@@ -34,6 +34,10 @@ import { UserProfileComponent } from '../user-profile/user-profile.component';
             <span class="nav-icon">📈</span>
             <span class="nav-text">{{ 'nav.trends' | translate }}</span>
           </a>
+          <a routerLink="/streaks" routerLinkActive="active" (click)="closeMobileMenu()">
+            <span class="nav-icon">🔥</span>
+            <span class="nav-text">Streaks</span>
+          </a>
           
           <div class="nav-controls">
             <app-theme-selector></app-theme-selector>
