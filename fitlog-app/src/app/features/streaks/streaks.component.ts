@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { StorageService } from '../../core/services/storage.service';
 import { StreakCalculatorService } from './services/streak-calculator.service';
 import { WeightEntry } from '../weight-tracker/models/weight-entry.model';
+import { ToastService } from '../../core/services/toast.service';
 
 @Component({
   selector: 'app-streaks',
@@ -43,52 +44,94 @@ import { WeightEntry } from '../weight-tracker/models/weight-entry.model';
       <div class="badges-section">
         <h2>🏆 Your Achievements</h2>
         <div class="badges-grid">
-          <div class="badge-card" [class.earned]="totalDaysLogged >= 1" [class.locked]="totalDaysLogged < 1">
-            <div class="badge-icon">🎯</div>
-            <h3>Getting Started</h3>
-            <p>Log your first weight</p>
-            <div class="badge-status" *ngIf="totalDaysLogged >= 1">✅ Earned!</div>
-            <div class="badge-status locked" *ngIf="totalDaysLogged < 1">🔒 Locked</div>
+          <!-- Profile Badge -->
+          <div class="badge-card" [class.earned]="hasCompleteProfile" [class.locked]="!hasCompleteProfile">
+            <div class="badge-icon">📝</div>
+            <h3>Trailblazer</h3>
+            <p>Complete your profile</p>
+            <div class="badge-status" *ngIf="hasCompleteProfile">✅ Earned!</div>
+            <div class="badge-status locked" *ngIf="!hasCompleteProfile">🔒 Add name & age</div>
           </div>
 
+          <!-- First Entry Badge -->
+          <div class="badge-card" [class.earned]="totalDaysLogged >= 1" [class.locked]="totalDaysLogged < 1">
+            <div class="badge-icon">🎯</div>
+            <h3>First Step</h3>
+            <p>Log your first weight</p>
+            <div class="badge-status" *ngIf="totalDaysLogged >= 1">✅ Earned!</div>
+            <div class="badge-status locked" *ngIf="totalDaysLogged < 1">🔒 Start tracking</div>
+          </div>
+
+          <!-- 3-Day Streak -->
           <div class="badge-card" [class.earned]="currentStreak >= 3" [class.locked]="currentStreak < 3">
             <div class="badge-icon">🔥</div>
-            <h3>3-Day Streak</h3>
-            <p>Log weight 3 days in a row</p>
+            <h3>Igniter</h3>
+            <p>3-day streak</p>
             <div class="badge-status" *ngIf="currentStreak >= 3">✅ Earned!</div>
             <div class="badge-status locked" *ngIf="currentStreak < 3">🔒 {{ currentStreak }}/3 days</div>
           </div>
 
+          <!-- 7-Day Streak -->
           <div class="badge-card" [class.earned]="currentStreak >= 7" [class.locked]="currentStreak < 7">
             <div class="badge-icon">⭐</div>
-            <h3>Week Warrior</h3>
-            <p>7-day streak achieved</p>
+            <h3>Weekender</h3>
+            <p>7-day streak</p>
             <div class="badge-status" *ngIf="currentStreak >= 7">✅ Earned!</div>
             <div class="badge-status locked" *ngIf="currentStreak < 7">🔒 {{ currentStreak }}/7 days</div>
           </div>
 
+          <!-- 14-Day Streak -->
+          <div class="badge-card" [class.earned]="currentStreak >= 14" [class.locked]="currentStreak < 14">
+            <div class="badge-icon">💪</div>
+            <h3>Fortnight Fighter</h3>
+            <p>14-day streak</p>
+            <div class="badge-status" *ngIf="currentStreak >= 14">✅ Earned!</div>
+            <div class="badge-status locked" *ngIf="currentStreak < 14">🔒 {{ currentStreak }}/14 days</div>
+          </div>
+
+          <!-- 30-Day Streak -->
           <div class="badge-card" [class.earned]="currentStreak >= 30" [class.locked]="currentStreak < 30">
             <div class="badge-icon">💎</div>
-            <h3>Monthly Master</h3>
-            <p>30-day streak achieved</p>
+            <h3>Marathoner</h3>
+            <p>30-day streak</p>
             <div class="badge-status" *ngIf="currentStreak >= 30">✅ Earned!</div>
             <div class="badge-status locked" *ngIf="currentStreak < 30">🔒 {{ currentStreak }}/30 days</div>
           </div>
 
+          <!-- 50 Entries -->
+          <div class="badge-card" [class.earned]="totalDaysLogged >= 50" [class.locked]="totalDaysLogged < 50">
+            <div class="badge-icon">📊</div>
+            <h3>Data Collector</h3>
+            <p>50 total entries</p>
+            <div class="badge-status" *ngIf="totalDaysLogged >= 50">✅ Earned!</div>
+            <div class="badge-status locked" *ngIf="totalDaysLogged < 50">🔒 {{ totalDaysLogged }}/50 entries</div>
+          </div>
+
+          <!-- 100-Day Streak -->
           <div class="badge-card" [class.earned]="currentStreak >= 100" [class.locked]="currentStreak < 100">
             <div class="badge-icon">👑</div>
-            <h3>Century Club</h3>
-            <p>100-day streak achieved</p>
+            <h3>Centurion</h3>
+            <p>100-day streak</p>
             <div class="badge-status" *ngIf="currentStreak >= 100">✅ Earned!</div>
             <div class="badge-status locked" *ngIf="currentStreak < 100">🔒 {{ currentStreak }}/100 days</div>
           </div>
 
-          <div class="badge-card" [class.earned]="hasCompleteProfile" [class.locked]="!hasCompleteProfile">
-            <div class="badge-icon">📝</div>
-            <h3>Profile Complete</h3>
-            <p>Add name, age & profile pic</p>
-            <div class="badge-status" *ngIf="hasCompleteProfile">✅ Earned!</div>
-            <div class="badge-status locked" *ngIf="!hasCompleteProfile">🔒 Complete your profile</div>
+          <!-- 100 Entries -->
+          <div class="badge-card" [class.earned]="totalDaysLogged >= 100" [class.locked]="totalDaysLogged < 100">
+            <div class="badge-icon">🎖️</div>
+            <h3>Dedicated</h3>
+            <p>100 total entries</p>
+            <div class="badge-status" *ngIf="totalDaysLogged >= 100">✅ Earned!</div>
+            <div class="badge-status locked" *ngIf="totalDaysLogged < 100">🔒 {{ totalDaysLogged }}/100 entries</div>
+          </div>
+
+          <!-- 365-Day Streak -->
+          <div class="badge-card" [class.earned]="currentStreak >= 365" [class.locked]="currentStreak < 365">
+            <div class="badge-icon">🏆</div>
+            <h3>Legend</h3>
+            <p>365-day streak</p>
+            <div class="badge-status" *ngIf="currentStreak >= 365">✅ Earned!</div>
+            <div class="badge-status locked" *ngIf="currentStreak < 365">🔒 {{ currentStreak }}/365 days</div>
           </div>
         </div>
       </div>
@@ -421,7 +464,8 @@ export class StreaksComponent implements OnInit {
 
   constructor(
     private storageService: StorageService,
-    private streakCalculator: StreakCalculatorService
+    private streakCalculator: StreakCalculatorService,
+    private toastService: ToastService
   ) {}
 
   async ngOnInit(): Promise<void> {
@@ -440,6 +484,14 @@ export class StreaksComponent implements OnInit {
     this.longestStreak = result.longestStreak;
     this.totalDaysLogged = result.totalDaysLogged;
     this.lastLogDate = result.lastLogDate;
+
+    // Debug: Show entry dates
+    console.log('📊 Streak Calculation Debug:');
+    console.log('Total Entries:', entries.length);
+    console.log('Entry Dates:', entries.map(e => new Date(e.date).toDateString()).sort());
+    console.log('Current Streak:', result.currentStreak);
+    console.log('Longest Streak:', result.longestStreak);
+    console.log('Total Days Logged:', result.totalDaysLogged);
   }
 
   /**
