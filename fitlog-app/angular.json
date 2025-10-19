@@ -22,8 +22,9 @@
       "prefix": "app",
       "architect": {
         "build": {
-          "builder": "@angular-devkit/build-angular:browser-esbuild",
+          "builder": "ngx-build-plus:browser",
           "options": {
+            "extraWebpackConfig": "webpack.config.js",
             "outputPath": "dist/fitlog-app",
             "index": "src/index.html",
             "main": "src/main.ts",
@@ -77,9 +78,11 @@
           "defaultConfiguration": "production"
         },
         "serve": {
-          "builder": "@angular-devkit/build-angular:dev-server",
+          "builder": "ngx-build-plus:dev-server",
           "options": {
-            "buildTarget": "fitlog-app:build:development"
+            "buildTarget": "fitlog-app:build:development",
+            "port": 4200,
+            "extraWebpackConfig": "webpack.config.js"
           },
           "configurations": {
             "production": {
