@@ -62,40 +62,44 @@ import { ToastService } from '../../core/services/toast.service';
             <div class="badge-status locked" *ngIf="totalDaysLogged < 1">🔒 Start tracking</div>
           </div>
 
-          <!-- 3-Day Streak -->
-          <div class="badge-card" [class.earned]="currentStreak >= 3" [class.locked]="currentStreak < 3">
-            <div class="badge-icon">🔥</div>
-            <h3>Igniter</h3>
-            <p>3-day streak</p>
-            <div class="badge-status" *ngIf="currentStreak >= 3">✅ Earned!</div>
-            <div class="badge-status locked" *ngIf="currentStreak < 3">🔒 {{ currentStreak }}/3 days</div>
+          <!-- 365-Day Streak -->
+          <div class="badge-card" [class.earned]="longestStreak >= 365" [class.locked]="longestStreak < 365">
+            <div class="badge-icon">🏆</div>
+            <h3>Legend</h3>
+            <p>365-day streak</p>
+            <div class="badge-progress" *ngIf="longestStreak < 365">
+              🔒 {{ longestStreak }}/365 days
+            </div>
           </div>
 
           <!-- 7-Day Streak -->
-          <div class="badge-card" [class.earned]="currentStreak >= 7" [class.locked]="currentStreak < 7">
+          <div class="badge-card" [class.earned]="longestStreak >= 7" [class.locked]="longestStreak < 7">
             <div class="badge-icon">⭐</div>
             <h3>Weekender</h3>
             <p>7-day streak</p>
-            <div class="badge-status" *ngIf="currentStreak >= 7">✅ Earned!</div>
-            <div class="badge-status locked" *ngIf="currentStreak < 7">🔒 {{ currentStreak }}/7 days</div>
+            <div class="badge-progress" *ngIf="longestStreak < 7">
+              🔒 {{ longestStreak }}/7 days
+            </div>
           </div>
 
           <!-- 14-Day Streak -->
-          <div class="badge-card" [class.earned]="currentStreak >= 14" [class.locked]="currentStreak < 14">
+          <div class="badge-card" [class.earned]="longestStreak >= 14" [class.locked]="longestStreak < 14">
             <div class="badge-icon">💪</div>
             <h3>Fortnight Fighter</h3>
             <p>14-day streak</p>
-            <div class="badge-status" *ngIf="currentStreak >= 14">✅ Earned!</div>
-            <div class="badge-status locked" *ngIf="currentStreak < 14">🔒 {{ currentStreak }}/14 days</div>
+            <div class="badge-progress" *ngIf="longestStreak < 14">
+              🔒 {{ longestStreak }}/14 days
+            </div>
           </div>
 
-          <!-- 30-Day Streak -->
-          <div class="badge-card" [class.earned]="currentStreak >= 30" [class.locked]="currentStreak < 30">
-            <div class="badge-icon">💎</div>
-            <h3>Marathoner</h3>
-            <p>30-day streak</p>
-            <div class="badge-status" *ngIf="currentStreak >= 30">✅ Earned!</div>
-            <div class="badge-status locked" *ngIf="currentStreak < 30">🔒 {{ currentStreak }}/30 days</div>
+          <!-- 100-Day Streak -->
+          <div class="badge-card" [class.earned]="longestStreak >= 100" [class.locked]="longestStreak < 100">
+            <div class="badge-icon">👑</div>
+            <h3>Centurion</h3>
+            <p>100-day streak</p>
+            <div class="badge-progress" *ngIf="longestStreak < 100">
+              🔒 {{ longestStreak }}/100 days
+            </div>
           </div>
 
           <!-- 50 Entries -->
