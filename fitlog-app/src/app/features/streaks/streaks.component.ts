@@ -488,10 +488,12 @@ export class StreaksComponent implements OnInit {
     // Debug: Show entry dates
     console.log('📊 Streak Calculation Debug:');
     console.log('Total Entries:', entries.length);
-    console.log('Entry Dates:', entries.map(e => new Date(e.date).toDateString()).sort());
+    console.log('All Entry Dates (with duplicates):', entries.map(e => new Date(e.date).toDateString()));
+    console.log('Unique Dates:', [...new Set(entries.map(e => new Date(e.date).toDateString()))]);
     console.log('Current Streak:', result.currentStreak);
     console.log('Longest Streak:', result.longestStreak);
     console.log('Total Days Logged:', result.totalDaysLogged);
+    console.log('Last Log Date:', result.lastLogDate);
   }
 
   /**
