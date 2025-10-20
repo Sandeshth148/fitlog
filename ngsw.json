@@ -1,6 +1,6 @@
 {
   "configVersion": 1,
-  "timestamp": 1760895454403,
+  "timestamp": 1760937600734,
   "index": "/fitlog/index.html",
   "assetGroups": [
     {
@@ -13,9 +13,9 @@
       "urls": [
         "/fitlog/chunk-3JDGJNVC.js",
         "/fitlog/chunk-5JAS3BXN.js",
+        "/fitlog/chunk-DAD53ZES.js",
         "/fitlog/chunk-F374CJ27.js",
         "/fitlog/chunk-K7ETDNVA.js",
-        "/fitlog/chunk-NOY63MV6.js",
         "/fitlog/chunk-OWHBI76O.js",
         "/fitlog/chunk-PDJPTLWY.js",
         "/fitlog/chunk-Q5OY4QWU.js",
@@ -25,7 +25,7 @@
         "/fitlog/chunk-ZGYFR4MK.js",
         "/fitlog/favicon.ico",
         "/fitlog/index.html",
-        "/fitlog/main-Y32J4LVO.js",
+        "/fitlog/main-RVI27QAP.js",
         "/fitlog/manifest.webmanifest",
         "/fitlog/polyfills-5CFQRCPP.js",
         "/fitlog/styles-5VUJPD6X.css"
@@ -57,9 +57,9 @@
   "hashTable": {
     "/fitlog/chunk-3JDGJNVC.js": "50b3b895950f10f0a6d7e5daaaadd0d50427dc42",
     "/fitlog/chunk-5JAS3BXN.js": "fcdd0bd3b119e25fc3a26665aa6c87daa4cd4eac",
+    "/fitlog/chunk-DAD53ZES.js": "a7c6e1d3281d7d21704a7b52ff06a58dade608f4",
     "/fitlog/chunk-F374CJ27.js": "c48a720d743576c646f72c4be1fd292db0d9a793",
     "/fitlog/chunk-K7ETDNVA.js": "ab16ea59dd7d36d13339bb8d9425cb4538dd6ecf",
-    "/fitlog/chunk-NOY63MV6.js": "88aa464e9b948f3dfa6b0f75331ffc7578c45e4e",
     "/fitlog/chunk-OWHBI76O.js": "fef60922af7013630fa8254b71218ddacc8925dd",
     "/fitlog/chunk-PDJPTLWY.js": "6191d1c5c8df7ecfa4b400cf4f3ecec79db876d2",
     "/fitlog/chunk-Q5OY4QWU.js": "dcd6435c28b8dd9414578bf4b31479526c4fa2b1",
@@ -77,8 +77,8 @@
     "/fitlog/icons/icon-512x512.png": "a27c969b08807c93088a3c5d7f345140bc372fe1",
     "/fitlog/icons/icon-72x72.png": "75534da70e878f53148966660deb09a7b8770e70",
     "/fitlog/icons/icon-96x96.png": "75534da70e878f53148966660deb09a7b8770e70",
-    "/fitlog/index.html": "e16f719a009d773367092faef35e3b9435a6b606",
-    "/fitlog/main-Y32J4LVO.js": "f401b7b52bd74efee1a82562d51a7cfdaaec2f94",
+    "/fitlog/index.html": "1050f77b304f67104fbe762c991cfab4d2ee7521",
+    "/fitlog/main-RVI27QAP.js": "d1dc16955be2aa229665c4e5c30fe2bff801c190",
     "/fitlog/manifest.webmanifest": "304b4b4e1d672eb9cf633fedfba335f2abd8cb7a",
     "/fitlog/polyfills-5CFQRCPP.js": "f2241e9a25858f895ce299d15f6f22e849e2fd72",
     "/fitlog/styles-5VUJPD6X.css": "aca897ad34200e8c33c023f7cbd8e2db20a171f1"
